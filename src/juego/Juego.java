@@ -15,13 +15,15 @@ public class Juego extends InterfaceJuego
 	Juego()
 	{
 		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo ... - v1", 800, 600);
+		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
 		
 		// Inicializar lo que haga falta para el juego
+		Conejo conejo = new Conejo(400, 500, 50,50);
 		// ...
 
 		// Inicia el juego!
 		this.entorno.iniciar();
+		
 	}
 
 	/**
