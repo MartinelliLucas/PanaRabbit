@@ -8,7 +8,7 @@ public class Juego extends InterfaceJuego
 {
 	// El objeto Entorno que controla el tiempo y otros
 	private Entorno entorno;
-	
+	private Conejo conejo;
 	// Variables y métodos propios de cada grupo
 	// ...
 	
