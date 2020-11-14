@@ -11,7 +11,7 @@ public class Auto {
 	private int height;
 	private double speed;
 	
-	public Auto(int x, int y, int width, int height) {
+	public Auto(double x, double y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;

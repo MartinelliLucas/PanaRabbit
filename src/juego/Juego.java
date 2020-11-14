@@ -9,7 +9,8 @@ public class Juego extends InterfaceJuego
 	// El objeto Entorno que controla el tiempo y otros
 	private Entorno entorno;
 	private Conejo conejo;
-	private Auto auto1;
+	//private Auto auto1;
+	private  Auto[] autosCalle = new Auto[3];
 	// Variables y métodos propios de cada grupo
 	// ...
 	boolean flag = true;
@@ -20,7 +21,12 @@ public class Juego extends InterfaceJuego
 		
 		// Inicializar lo que haga falta para el juego
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);
-		this.auto1 = new Auto(0,entorno.getHeight()-150,60,40);
+		//this.auto1 = new Auto(0,entorno.getHeight()-150,60,40);
+		this.autosCalle[0] = new Auto(0,200,60,40);
+		for	(int i = 1; i < this.autosCalle.length;i++) {
+			this.autosCalle[i] = new Auto(this.autosCalle[0].getX()+conejo.getWidth()*7,200,60,40);
+		}
+		
 		// ...
 
 		// Inicia el juego!
@@ -54,7 +60,12 @@ public class Juego extends InterfaceJuego
 				}*/
 		
 		//Creacion, movimiento e interacciones del auto:
-		auto1.renderCar(this.entorno);
+		for (int i = 0; i <= autosCalle.length;i++) {
+			autosCalle[i].renderCar(this.entorno);
+			autosCalle[i].moveForward();
+			autosCalle[i].fall();
+		}
+		/*renderCar(this.entorno);
 		auto1.moveForward();
 		auto1.fall();
 		
@@ -63,7 +74,7 @@ public class Juego extends InterfaceJuego
 		}
 		if (auto1.getY() > entorno.getHeight()) {
 			auto1.setY(0+auto1.getHeight());
-		}
+		}*/
 		// Procesamiento de un instante de tiempo
 				// ...
 	}
