@@ -18,7 +18,7 @@ public class Juego extends InterfaceJuego
 		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
 		
 		// Inicializar lo que haga falta para el juego
-		Conejo conejo = new Conejo(400, 500, 50,50);
+		this.conejo = new Conejo(400, 500, 50,50);
 		// ...
 
 		// Inicia el juego!
@@ -34,10 +34,16 @@ public class Juego extends InterfaceJuego
 	 */
 	public void tick()
 	{
+		conejo.renderRabbit(this.entorno);
+		this.conejo.caerse();
 		// Procesamiento de un instante de tiempo
 		// ...
-		
-
+		if(entorno.sePresiono(entorno.TECLA_ARRIBA))
+				conejo.moveFordward();
+		if(entorno.sePresiono(entorno.TECLA_DERECHA))
+			conejo.moveRight();
+		if(entorno.sePresiono(entorno.TECLA_IZQUIERDA))
+			conejo.moveLeft();
 	}
 	
 

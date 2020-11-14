@@ -1,16 +1,26 @@
 package juego;
+import java.awt.Color;
+
+import entorno.Entorno;
 
 public class Conejo {
 	private int x;
-	private int y;
+	private double y;
 	private int ancho;
 	private int alto;
+	private int velocidad;
+	
 	
 	public Conejo(int x, int y, int ancho, int alto) {
 		this.x = x;
-		this.y = y;
+		this.y = y+velocidad;
 		this.ancho = ancho;
 		this.alto = alto;
+		this.velocidad = 2;
+	}
+	
+	void caerse() {
+		this.y = y+0.1;
 	}
 	
 	void moveFordward() {
@@ -24,15 +34,15 @@ public class Conejo {
 		this.x = x + 10;
 	}
 	
-	void renderRabbit(int x, int y, int ancho, int alto) {
-		
+	void renderRabbit(Entorno entorno) {
+		entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, Color.ORANGE);
 	}
 	
 	int getX() {
 		return this.x;
 	}
 	
-	int getY() {
+	double getY() {
 		return this.y;
 	}
 	
