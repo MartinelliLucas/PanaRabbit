@@ -9,29 +9,29 @@ public class Juego extends InterfaceJuego
 	// El objeto Entorno que controla el tiempo y otros
 	private Entorno entorno;
 	private Conejo conejo;
-	//private Auto auto1;
-	private  Auto[] autosCalle = new Auto[3];
+	private Auto[] autosCalle;	
+	private Kamehameha kame;
+	
 	// Variables y métodos propios de cada grupo
 	// ...
-	boolean flag = true;
-	Juego()
+	public boolean flag;	
 	{
 		// Inicializa el objeto entorno
 		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
 		
 		// Inicializar lo que haga falta para el juego
-		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);
-		//this.auto1 = new Auto(0,entorno.getHeight()-150,60,40);
-		this.autosCalle[0] = new Auto(0,200,60,40);
-		for	(int i = 1; i < this.autosCalle.length;i++) {
-			this.autosCalle[i] = new Auto(this.autosCalle[0].getX()+conejo.getWidth()*7,200,60,40);
-		}
 		
+		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);
+		this.kame = new Kamehameha(400,500,20,20);
+		this.autosCalle = new Auto[3];
+		autosCalle[0] = new Auto(0,conejo.getY()-100,60,40);
+		autosCalle[1] = new Auto(250,conejo.getY()-100,60,40);
+		autosCalle[2] = new Auto(500,conejo.getY()-100,60,40);
 		// ...
 
 		// Inicia el juego!
 		this.entorno.iniciar();
-		
+		this.flag = true;
 	}
 
 	/**
@@ -43,8 +43,37 @@ public class Juego extends InterfaceJuego
 	public void tick()
 	{
 		//Creacion, movimiento e interacciones del conejo:
+		if (flag) {
+			for (int i = 0; i < autosCalle.length; i++) {
+				this.autosCalle[i].renderCar(this.entorno);
+				this.autosCalle[i].moveForward();
+				this.autosCalle[i].fall();
+			}
+		}
+		if (autosCalle[0].getX() > entorno.getWidth())
+			autosCalle[0].setX(0);
+		
+		if (autosCalle[0].getY() > entorno.getHeight()-50)
+			autosCalle[0].setY(0);
+		
+		if (autosCalle[1].getX() > entorno.getWidth())
+			autosCalle[1].setX(0);
+		
+		if (autosCalle[1].getY() > entorno.getHeight()-50)
+			autosCalle[1].setY(0);
+		
+		if (autosCalle[2].getX() > entorno.getWidth())
+			autosCalle[2].setX(0);
+		
+		if (autosCalle[2].getY() > entorno.getHeight()-50)
+			autosCalle[2].setY(0);
+		
 		conejo.renderRabbit(this.entorno);
 		conejo.fall();
+		
+		if (entorno.sePresiono(entorno.TECLA_ESPACIO))
+			flag = false;
+			
 		
 		if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight())
 			conejo.moveFordward();
@@ -53,30 +82,9 @@ public class Juego extends InterfaceJuego
 		if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX()> conejo.getWidth()/2)
 			conejo.moveLeft();
 		
-		// bloque para finalizar el juego si el conejo sale por el limite inferior:
-				/*if(conejo.getY() >= entorno.getHeight()) {
-					
-					}
-				}*/
-		
-		//Creacion, movimiento e interacciones del auto:
-		for (int i = 0; i <= autosCalle.length;i++) {
-			autosCalle[i].renderCar(this.entorno);
-			autosCalle[i].moveForward();
-			autosCalle[i].fall();
-		}
-		/*renderCar(this.entorno);
-		auto1.moveForward();
-		auto1.fall();
-		
-		if (auto1.getX() > entorno.getWidth()) {
-			auto1.setX(0);
-		}
-		if (auto1.getY() > entorno.getHeight()) {
-			auto1.setY(0+auto1.getHeight());
-		}*/
+				
 		// Procesamiento de un instante de tiempo
-				// ...
+			// ...
 	}
 	
 
