@@ -25,6 +25,11 @@ public class Auto {
 	void moveForward() {
 		this.x = x + this.speed;
 	}
+	
+	void moveBackwards() {
+		this.x = x - this.speed;
+	}
+	
 	void fall() {
 		this.y = y+0.1;
 	}
