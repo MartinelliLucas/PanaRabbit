@@ -44,6 +44,21 @@ public class Juego extends InterfaceJuego
 	
 	//metodo para identificar auto colisionado:
 	
+	int colisionAuto (Auto[] arrAuto, Kamehameha kame) {
+		for (int i = 0; i < arrAuto.length; i++) {
+			if (arrAuto[i] == null)
+				continue;
+			if (arrAuto[i].getX() - (arrAuto[i].getWidth()/2) < kame.getX() &&
+					kame.getX() < (arrAuto[i].getX() + (arrAuto[i].getWidth()/2)) &&
+					arrAuto[i].getY() + (arrAuto[i].getHeight()/2) > kame.getY() - (kame.getAlto()/2) &&
+					kame.getY() > (arrAuto[i].getY() - arrAuto[i].getHeight()/2)) {
+				return i;
+			}
+		}
+		
+		
+		return -1;
+	}
 	
 	// ...
 		
@@ -111,11 +126,15 @@ public class Juego extends InterfaceJuego
 			this.autosCalle[i].moveForward();
 			this.autosCalle[i].fall();
 			
-			if (autosCalle[i].getX() > entorno.getWidth())
-				autosCalle[i].setX(0);
+			if (colisionAuto(this.autosCalle, this.kame) != -1){
+				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;				
+			}
 			
-			if (autosCalle[i].getY() > entorno.getHeight()-50)
-				autosCalle[i].setY(0);
+			if (this.autosCalle[i].getX() > entorno.getWidth())
+				this.autosCalle[i].setX(0);
+			
+			if (this.autosCalle[i].getY() > entorno.getHeight()-50)
+				this.autosCalle[i].setY(0);
 			}
 			
 		for (int i = 0; i < this.autosCalle2.length; i++) {
@@ -126,6 +145,7 @@ public class Juego extends InterfaceJuego
 			this.autosCalle2[i].fall();
 			this.autosCalle2[i].setSpeed(1.5);
 			
+						
 			if (autosCalle2[i].getX() < 0)
 				autosCalle2[i].setX(entorno.getWidth());
 			
@@ -142,11 +162,13 @@ public class Juego extends InterfaceJuego
 			flagKame = true;
 		}
 		if (flagKame) {
+			
 			kame.renderKame(this.entorno);
 			kame.desplazamiento();
 		}
-		if (kameColision(autosCalle,kame) || kameColision(autosCalle2, kame)) {
+		if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1) {
 			flagKame = false;
+			
 		}
 	}
 				
