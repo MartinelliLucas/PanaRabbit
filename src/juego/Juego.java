@@ -45,6 +45,9 @@ public class Juego extends InterfaceJuego
 	//metodo para identificar auto colisionado:
 	
 	int colisionAuto (Auto[] arrAuto, Kamehameha kame) {
+		if(kame == null) {
+			return -1;
+		}
 		for (int i = 0; i < arrAuto.length; i++) {
 			if (arrAuto[i] == null)
 				continue;
@@ -71,7 +74,7 @@ public class Juego extends InterfaceJuego
 		
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);
 		
-		this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
+		this.kame = null;
 		
 		this.autosCalle = new Auto[3];
 		for (int i = 0; i < this.autosCalle.length; i++) {
@@ -127,48 +130,54 @@ public class Juego extends InterfaceJuego
 			this.autosCalle[i].fall();
 			
 			if (colisionAuto(this.autosCalle, this.kame) != -1){
-				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;				
+				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
+				this.kame = null;
 			}
 			
-			if (this.autosCalle[i].getX() > entorno.getWidth())
+			if (this.autosCalle[i].getX() > entorno.getWidth()) {
 				this.autosCalle[i].setX(0);
-			
-			if (this.autosCalle[i].getY() > entorno.getHeight()-50)
+			}
+			if (this.autosCalle[i].getY() > entorno.getHeight()-50) {
 				this.autosCalle[i].setY(0);
 			}
+		}
 			
 		for (int i = 0; i < this.autosCalle2.length; i++) {
-			if (autosCalle2[i] == null)
+			if (autosCalle2[i] == null) {
 				continue;
+			}	
+			
 			this.autosCalle2[i].renderCar(this.entorno);
 			this.autosCalle2[i].moveBackwards();
 			this.autosCalle2[i].fall();
 			this.autosCalle2[i].setSpeed(1.5);
 			
-						
-			if (autosCalle2[i].getX() < 0)
-				autosCalle2[i].setX(entorno.getWidth());
-			
-			if (autosCalle2[i].getY() > entorno.getHeight()-50)
-				autosCalle2[i].setY(0);
+			if (colisionAuto(this.autosCalle2, this.kame) != -1){
+				this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
+				this.kame = null;
 			}
+						
+			if (autosCalle2[i].getX() < 0) {
+				autosCalle2[i].setX(entorno.getWidth());
+			}
+			if (autosCalle2[i].getY() > entorno.getHeight()-50) {
+				autosCalle2[i].setY(0);
+			}	
+		}
 		
 		
 		//Creacion, movimiento e interacciones del Kamehameha:
 		
 		if (entorno.sePresiono(entorno.TECLA_ESPACIO)) {
-			kame.setX(conejo.getX());
-			kame.setY(conejo.getY() - conejo.getHeight()/2);
+			this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
 			flagKame = true;
 		}
 		if (flagKame) {
-			
-			kame.renderKame(this.entorno);
-			kame.desplazamiento();
+			this.kame.renderKame(this.entorno);
+			this.kame.desplazamiento();
 		}
 		if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1) {
 			flagKame = false;
-			
 		}
 	}
 				
