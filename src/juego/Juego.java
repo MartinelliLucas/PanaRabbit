@@ -12,37 +12,13 @@ public class Juego extends InterfaceJuego
 	private Auto[] autosCalle;	
 	private Auto[] autosCalle2;
 	private Kamehameha kame;
+	private Kamehameha circulo;
 	
 	// Variables y métodos propios de cada grupo
 	
-	//Metodo para evaluar si el kame colisiona con un auto:
-	boolean kameColision(Auto[] arrAuto, Kamehameha kame) {
-		boolean tX = false;
-		boolean tY = false;
-		
-		for (int i = 0; i < arrAuto.length; i++) {
-			if (arrAuto[i] == null)
-				continue;
-			if (arrAuto[i].getX() - (arrAuto[i].getWidth()/2) < kame.getX() &&
-			kame.getX() < (arrAuto[i].getX() + (arrAuto[i].getWidth()/2))){
-				tX = true;
-			}
-		}
-		for (int i = 0; i < arrAuto.length; i++) {
-			if (arrAuto[i] == null)
-				continue;
-			if (arrAuto[i].getY() + (arrAuto[i].getHeight()/2) > kame.getY() - (kame.getAlto()/2) &&
-					kame.getY() > (arrAuto[i].getY() - arrAuto[i].getHeight()/2)) {
-				tY = true;
-			}
-		}
-		
-		if (tX && tY)
-			return true;
-		return false;
-	}
 	
-	//metodo para identificar auto colisionado:
+	
+	//metodo para identificar auto colisionado con el kame:
 	
 	int colisionAuto (Auto[] arrAuto, Kamehameha kame) {
 		if(kame == null) {
@@ -64,7 +40,7 @@ public class Juego extends InterfaceJuego
 	}
 	
 	// ...
-		
+	public boolean flagCd = true;	
 	public boolean flagKame = false;	
 	{
 		// Inicializa el objeto entorno
@@ -74,7 +50,9 @@ public class Juego extends InterfaceJuego
 		
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);
 		
-		this.kame = null;
+		this.kame = null; // debe ser null para que no se dispare automaticamente al iniciar.
+		
+		this.circulo = new Kamehameha (entorno.getX()+200, 30 , 20);
 		
 		this.autosCalle = new Auto[3];
 		for (int i = 0; i < this.autosCalle.length; i++) {
@@ -167,15 +145,30 @@ public class Juego extends InterfaceJuego
 		
 		
 		//Creacion, movimiento e interacciones del Kamehameha:
-		
+
+		//crea el objeto kame (que se inicializa como null), asiga true al flag para dibujar y false al flag del cd.
 		if (entorno.sePresiono(entorno.TECLA_ESPACIO)) {
 			this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
-			flagKame = true;
+			this.flagKame = true;
+			this.flagCd = false;
 		}
+		
+		//evalua el valor de flagCd que controla el cd y dibuja segun corresponda.
+		if (flagCd) {
+			this.circulo.greenKame(this.entorno);
+		}
+		else {
+			this.circulo.redKame(this.entorno);
+			// CREO QUE ACA IRIA EL KAME.ENFRIAMIENTO, PERO QUE USE EL VALOR DE flagCd en vez 
+			// del boolean de kame (porque va a valer null si choca).
+		}
+		
+		//este if dibuja el kame desde que se presiona espacio hasta que impacta.
 		if (flagKame) {
 			this.kame.renderKame(this.entorno);
 			this.kame.desplazamiento();
 		}
+		// si hay colision o sale de pantalla, deja de dibujar. *si colisiona tambien ya que no puede dibujar un null*
 		if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1) {
 			flagKame = false;
 		}
