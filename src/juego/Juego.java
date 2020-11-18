@@ -37,8 +37,10 @@ public class Juego extends InterfaceJuego
 			}
 		}
 		
-		if (tX && tY)
+		if (tX && tY) {
+			
 			return true;
+		}
 		return false;
 	}
 	
@@ -177,7 +179,6 @@ public class Juego extends InterfaceJuego
 		}
 		if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1) {
 			flagKame = false;
-			
 		}
 	}
 				

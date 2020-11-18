@@ -27,6 +27,7 @@ public class Kamehameha {
 		this.c = c;
 		this.diametro = diametro;
 	}
+
 	void enfriamiento(boolean usado) {
 		this.usado = usado;
 		Timer timer = new Timer ();
