@@ -7,6 +7,7 @@ import entorno.InterfaceJuego;
 public class Juego extends InterfaceJuego
 {
 	// El objeto Entorno que controla el tiempo y otros
+	
 	private Entorno entorno;
 	private Conejo conejo;
 	private Auto[] autosCalle;	
@@ -106,18 +107,18 @@ public class Juego extends InterfaceJuego
 			this.autosCalle[i].renderCar(this.entorno);
 			this.autosCalle[i].moveForward();
 			this.autosCalle[i].fall();
-			
-			if (colisionAuto(this.autosCalle, this.kame) != -1){
-				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
-				this.kame = null;
-			}
-			
+						
 			if (this.autosCalle[i].getX() > entorno.getWidth()) {
 				this.autosCalle[i].setX(0);
 			}
 			if (this.autosCalle[i].getY() > entorno.getHeight()-50) {
 				this.autosCalle[i].setY(0);
 			}
+			
+			if (colisionAuto(this.autosCalle, this.kame) != -1){
+				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
+				this.kame = null;
+			}			
 		}
 			
 		for (int i = 0; i < this.autosCalle2.length; i++) {
@@ -130,17 +131,17 @@ public class Juego extends InterfaceJuego
 			this.autosCalle2[i].fall();
 			this.autosCalle2[i].setSpeed(1.5);
 			
-			if (colisionAuto(this.autosCalle2, this.kame) != -1){
-				this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
-				this.kame = null;
-			}
 						
 			if (autosCalle2[i].getX() < 0) {
 				autosCalle2[i].setX(entorno.getWidth());
 			}
 			if (autosCalle2[i].getY() > entorno.getHeight()-50) {
 				autosCalle2[i].setY(0);
-			}	
+			}
+			if (colisionAuto(this.autosCalle2, this.kame) != -1){
+				this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
+				this.kame = null;
+			}			
 		}
 		
 		
@@ -164,7 +165,7 @@ public class Juego extends InterfaceJuego
 		}
 		
 		//este if dibuja el kame desde que se presiona espacio hasta que impacta.
-		if (flagKame) {
+		if (flagKame && kame!= null) {
 			this.kame.renderKame(this.entorno);
 			this.kame.desplazamiento();
 		}
