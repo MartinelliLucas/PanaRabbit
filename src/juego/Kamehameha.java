@@ -80,4 +80,13 @@ public class Kamehameha {
 	void redKame (Entorno entorno) {
 		entorno.dibujarCirculo(this.z, this.c, this.diametro, Color.RED);
 	}
+	public double getX() {
+		return this.x;
+	}
+	public double getY() {
+		return this.y;
+	}
+	public int getAlto() {
+		return this.alto;
+	}
 }

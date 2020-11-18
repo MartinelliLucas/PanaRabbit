@@ -12,7 +12,7 @@ public class Juego extends InterfaceJuego
 	private Auto[] autosCalle;	
 	private Auto[] autosCalle2;
 	private Kamehameha kame;
-	
+	private Kamehameha circulo;
 	// Variables y métodos propios de cada grupo
 	
 	//Metodo para evaluar si el kame colisiona con un auto:
@@ -73,7 +73,10 @@ public class Juego extends InterfaceJuego
 		
 		this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
 		
+		this.circulo = new Kamehameha (entorno.getX()+200, 30 , 20);
+		
 		this.autosCalle = new Auto[3];
+		
 		for (int i = 0; i < this.autosCalle.length; i++) {
 			this.autosCalle[i] = new Auto(i*250,conejo.getY()-200,60,40);
 		}
@@ -155,14 +158,20 @@ public class Juego extends InterfaceJuego
 		
 		
 		//Creacion, movimiento e interacciones del Kamehameha:
-		
-		if (entorno.sePresiono(entorno.TECLA_ESPACIO)) {
+		if (kame.isUsado()) {
+			circulo.redKame(this.entorno);
+		}
+		else {
+			circulo.greenKame(this.entorno);
+		}
+		if (entorno.sePresiono(entorno.TECLA_ESPACIO) && !kame.isUsado()) {
 			kame.setX(conejo.getX());
 			kame.setY(conejo.getY() - conejo.getHeight()/2);
 			flagKame = true;
+			kame.enfriamiento(true);
+			
 		}
 		if (flagKame) {
-			
 			kame.renderKame(this.entorno);
 			kame.desplazamiento();
 		}
