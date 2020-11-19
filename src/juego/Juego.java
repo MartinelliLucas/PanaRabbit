@@ -40,6 +40,20 @@ public class Juego extends InterfaceJuego
 		return -1;
 	}
 	
+	boolean colisionConejo (Auto[] arrAuto, Conejo conejo) {
+		for (int i = 0; i < arrAuto.length; i++) {
+			if (arrAuto[i] == null) {
+				continue;
+			}
+			if (conejo.getY() > arrAuto[i].getY() - arrAuto[i].getHeight()/2 && 
+				conejo.getY() < arrAuto[i].getY() + arrAuto[i].getHeight()/2 &&
+				conejo.getX() > arrAuto[i].getX() - arrAuto[i].getWidth()/2 &&
+				conejo.getX() < arrAuto[i].getX() + arrAuto[i].getWidth()/2){
+				return true;
+			}
+		}
+		return false;
+	}
 	// ...
 	public boolean flagCd = true;	
 	public boolean flagKame = false;	
@@ -98,6 +112,11 @@ public class Juego extends InterfaceJuego
 //		if(this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight()) {
 //			
 //		}
+		
+		if(colisionConejo(autosCalle, conejo) || colisionConejo(autosCalle2, conejo)) {
+			this.conejo.setX(400);
+			this.conejo.setY(this.entorno.getHeight()-100);
+		}
 		
 		//Creacion, movimiento e interacciones de los autos:
 		
