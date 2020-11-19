@@ -13,14 +13,14 @@ public class Kamehameha {
 	private double y;
 	private int ancho;
 	private int alto;
-	private boolean usado;
+
 
 	public Kamehameha (double x, double y , int ancho, int alto) {		
 		this.x = x;
 		this.y = y;
 		this.ancho = ancho;
 		this.alto = alto;
-		this.usado = false;
+
 	}
 	public Kamehameha (int z, int c , int diametro) {
 		this.z = z;
@@ -28,10 +28,6 @@ public class Kamehameha {
 		this.diametro = diametro;
 	}
 
-
-	void fall () {
-		this.y = y + 0.1;
-	}
 	
 	void desplazamiento () {
 		this.y = y - 5;

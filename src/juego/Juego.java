@@ -1,6 +1,7 @@
 package juego;
 
 
+import java.awt.Image;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,6 +19,7 @@ public class Juego extends InterfaceJuego
 	private Kamehameha kame;
 	private Kamehameha circulo;
 	private boolean flagCd = false;
+	private GameOver fin;
 	// Variables y métodos propios de cada grupo
 	
 	// metodo enfriamiento kame y auto ;
@@ -55,12 +57,10 @@ public class Juego extends InterfaceJuego
 					kame.getY() > (arrAuto[i].getY() - arrAuto[i].getHeight()/2)) {
 				return i;
 			}
-		}
-		
-		
+		}	
 		return -1;
 	}
-	
+	// metodo de colision auto con conejo
 	boolean colisionConejo (Auto[] arrAuto, Conejo conejo) {
 		for (int i = 0; i < arrAuto.length; i++) {
 			if (arrAuto[i] == null) {
@@ -75,14 +75,18 @@ public class Juego extends InterfaceJuego
 		}
 		return false;
 	}
-	// ...
+
+
 	public boolean flagKame = false;	
+
+	
 	{
 		// Inicializa el objeto entorno
+	
 		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
 		
 		// Inicializar lo que haga falta para el juego
-		
+
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);
 		
 		this.kame = null; // debe ser null para que no se dispare automaticamente al iniciar.
@@ -99,7 +103,7 @@ public class Juego extends InterfaceJuego
 			this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,60,40);
 		}
 		
-		
+	
 		// ...
 
 		// Inicia el juego!
@@ -128,14 +132,10 @@ public class Juego extends InterfaceJuego
 		if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX()> conejo.getWidth()/2)
 			conejo.moveLeft();
 		
-		//codigo para terminar el juego si el conejo sale por el limite inferior:
-//		if(this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight()) {
-//			
-//		}
 		
 		if(colisionConejo(autosCalle, conejo) || colisionConejo(autosCalle2, conejo)) {
 			this.conejo.setX(400);
-			this.conejo.setY(this.entorno.getHeight()-100);
+			this.conejo.setY(this.entorno.getHeight()+50);
 		}
 		
 		//Creacion, movimiento e interacciones de los autos:
@@ -159,7 +159,7 @@ public class Juego extends InterfaceJuego
 				this.kame = null;
 			}			
 		}
-			
+
 		for (int i = 0; i < this.autosCalle2.length; i++) {
 			if (autosCalle2[i] == null) {
 				continue;
@@ -200,10 +200,11 @@ public class Juego extends InterfaceJuego
 		y el objeto se inicializo como null!! */
 
 		if (kame == null && !flagCd && entorno.sePresiono(entorno.TECLA_ESPACIO)) { 
-					this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
-					this.flagKame = true;
-					this.flagCd = true;
-					enfriamiento(this.kame, this.flagCd);
+			
+			this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
+			this.flagKame = true;
+			this.flagCd = true;
+			enfriamiento(this.kame, this.flagCd);
 		}
 
 		//este if dibuja el kame desde que se presiona espacio hasta que impacta y da lugar al enfriamiento del poder.
@@ -218,6 +219,44 @@ public class Juego extends InterfaceJuego
 		// si hay colision o sale de pantalla, deja de dibujar. *si colisiona tambien ya que no puede dibujar un null*
 		if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1 ) {
 			flagKame = false;
+		}
+		
+		//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
+		if(this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
+			|| this.colisionConejo(autosCalle, conejo)|| this.colisionConejo(autosCalle2, conejo)) {
+				this.fin = new GameOver ();
+				fin.renderGameOver(this.entorno);
+				entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getX()-250 , entorno.getHeight()-100);
+				if (entorno.sePresiono ('y')) {
+					// si apreta y borro el entorno y lo vuelvo a declarar
+					this.entorno = null;
+					
+					this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
+					
+
+					this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);
+					
+					this.kame = null; 
+					
+					this.circulo = new Kamehameha (entorno.getX()+200, 30 , 20);
+					
+					this.autosCalle = new Auto[3];
+					for (int i = 0; i < this.autosCalle.length; i++) {
+						this.autosCalle[i] = new Auto(i*250,conejo.getY()-200,60,40);
+					}
+					
+					this.autosCalle2 = new Auto[4];
+					for (int i = 0; i < this.autosCalle2.length; i++) {
+						this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,60,40);
+					}
+					// inicio el nuevo entorno
+					this.entorno.iniciar();
+			
+				}
+				if (entorno.sePresiono('n')) {
+					// cierro ventana ??? PD NO cierra la ventana SI SE APRETO Y primero 
+					this.entorno.dispose();
+				}	
 		}
 	}
 				
