@@ -17,7 +17,7 @@ public class Juego extends InterfaceJuego
 	private Auto[] autosCalle2;
 	private Kamehameha kame;
 	private Kamehameha circulo;
-	private boolean flagCd;
+	private boolean flagCd = false;
 	// Variables y métodos propios de cada grupo
 	
 	// metodo enfriamiento kame y auto ;
@@ -36,7 +36,7 @@ public class Juego extends InterfaceJuego
 			}
 
 		};
-		timer.schedule(tarea, 10000);
+		timer.schedule(tarea, 5000);
 	}
 		
 	
@@ -76,7 +76,6 @@ public class Juego extends InterfaceJuego
 		return false;
 	}
 	// ...
-	
 	public boolean flagKame = false;	
 	{
 		// Inicializa el objeto entorno
@@ -195,28 +194,29 @@ public class Juego extends InterfaceJuego
 		}
 		else {
 			this.circulo.redKame(this.entorno);
-			// CREO QUE ACA IRIA EL KAME.ENFRIAMIENTO, PERO QUE USE EL VALOR DE flagCd en vez 
-			// del boolean de kame (porque va a valer null si choca).
 		}
-
-		//este if dibuja el kame desde que se presiona espacio hasta que impacta y da lugar al enfriamiento del poder.
-		if (flagKame && kame!= null && flagCd) {
-			this.kame.renderKame(this.entorno);
-			this.kame.desplazamiento();
-			enfriamiento(this.kame, this.flagCd);
-		}
+		
 		/*evalua que pasa cuando el kame es null y termino el cd !! esto vale tambien para el comienzo ya que el cd es falso
-		y el objeto se inicializo como null!! 
-		se podria dar vuelta la condicionalidad para qe se entienda mejor pero creo qe es lo mismo*/
-		if (kame == null && !flagCd) {
-				if (entorno.sePresiono(entorno.TECLA_ESPACIO)) {
+		y el objeto se inicializo como null!! */
+
+		if (kame == null && !flagCd && entorno.sePresiono(entorno.TECLA_ESPACIO)) { 
 					this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
 					this.flagKame = true;
 					this.flagCd = true;
+					enfriamiento(this.kame, this.flagCd);
+		}
+
+		//este if dibuja el kame desde que se presiona espacio hasta que impacta y da lugar al enfriamiento del poder.
+		if (flagKame && kame!= null ) {
+			this.kame.renderKame(this.entorno);
+			this.kame.desplazamiento();
+			if (this.kame.getY() <=0 ) { // si se va de la pantalla lo pone como null
+				kame = null ;
 			}
 		}
+
 		// si hay colision o sale de pantalla, deja de dibujar. *si colisiona tambien ya que no puede dibujar un null*
-		if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1) {
+		if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1 ) {
 			flagKame = false;
 		}
 	}
