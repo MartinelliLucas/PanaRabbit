@@ -20,6 +20,7 @@ public class Juego extends InterfaceJuego
 	private Kamehameha circulo;
 	private boolean flagCd = false;
 	private GameOver fin;
+
 	// Variables y métodos propios de cada grupo
 	
 	// metodo enfriamiento kame y auto ;
@@ -41,6 +42,26 @@ public class Juego extends InterfaceJuego
 		timer.schedule(tarea, 5000);
 	}
 		
+	//metodo para respawnear autos:
+	void carRespawn(Auto[] arrAuto) {
+		Timer carTimer = new Timer();
+		
+		TimerTask respawn = new TimerTask() {
+			@Override
+			public void run() {
+				for (int i = 0; i < arrAuto.length; i++) {
+					if( i == 0 && arrAuto[i] == null) {
+						arrAuto[i] = new Auto(arrAuto[i+1].getX()-250,arrAuto[i+1].getY(),60,40);
+					}
+					if (arrAuto[i] == null) {
+						arrAuto[i] = new Auto(arrAuto[i-1].getX()+250,arrAuto[i-1].getY(),60,40);
+					}
+				}
+			}
+		};
+		carTimer.schedule(respawn, 5000);
+	}
+	
 	
 	//metodo para identificar auto colisionado con el kame:
 	
@@ -52,12 +73,14 @@ public class Juego extends InterfaceJuego
 			if (arrAuto[i] == null)
 				continue;
 			if (arrAuto[i].getX() - (arrAuto[i].getWidth()/2) < kame.getX() &&
-					kame.getX() < (arrAuto[i].getX() + (arrAuto[i].getWidth()/2)) &&
-					arrAuto[i].getY() + (arrAuto[i].getHeight()/2) > kame.getY() - (kame.getAlto()/2) &&
-					kame.getY() > (arrAuto[i].getY() - arrAuto[i].getHeight()/2)) {
+				kame.getX() < (arrAuto[i].getX() + (arrAuto[i].getWidth()/2)) &&
+				arrAuto[i].getY() + (arrAuto[i].getHeight()/2) > kame.getY() - (kame.getAlto()/2) &&
+				kame.getY() > (arrAuto[i].getY() - arrAuto[i].getHeight()/2)) {
 				return i;
 			}
+
 		}	
+
 		return -1;
 	}
 	// metodo de colision auto con conejo
@@ -66,10 +89,10 @@ public class Juego extends InterfaceJuego
 			if (arrAuto[i] == null) {
 				continue;
 			}
-			if (conejo.getY() > arrAuto[i].getY() - arrAuto[i].getHeight()/2 && 
-				conejo.getY() < arrAuto[i].getY() + arrAuto[i].getHeight()/2 &&
-				conejo.getX() > arrAuto[i].getX() - arrAuto[i].getWidth()/2 &&
-				conejo.getX() < arrAuto[i].getX() + arrAuto[i].getWidth()/2){
+			if (conejo.getY() + conejo.getHeight()/2 > arrAuto[i].getY() - arrAuto[i].getHeight()/2 && 
+				conejo.getY() - conejo.getHeight()/2 < arrAuto[i].getY() + arrAuto[i].getHeight()/2 &&
+				conejo.getX() + conejo.getWidth()/2> arrAuto[i].getX() - arrAuto[i].getWidth()/2 &&
+				conejo.getX() - conejo.getWidth()/2< arrAuto[i].getX() + arrAuto[i].getWidth()/2){
 				return true;
 			}
 		}
@@ -157,7 +180,9 @@ public class Juego extends InterfaceJuego
 			if (colisionAuto(this.autosCalle, this.kame) != -1){
 				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
 				this.kame = null;
-			}			
+				carRespawn(autosCalle);
+			}
+			
 		}
 
 		for (int i = 0; i < this.autosCalle2.length; i++) {
@@ -180,10 +205,10 @@ public class Juego extends InterfaceJuego
 			if (colisionAuto(this.autosCalle2, this.kame) != -1){
 				this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
 				this.kame = null;
+				carRespawn(autosCalle2);
 			}			
 		}
-		
-		
+				
 		//Creacion, movimiento e interacciones del Kamehameha:
 
 		//crea el objeto kame (que se inicializa como null), asiga true al flag para dibujar y false al flag del cd.
@@ -229,7 +254,7 @@ public class Juego extends InterfaceJuego
 				entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getX()-250 , entorno.getHeight()-100);
 				if (entorno.sePresiono ('y')) {
 					// si apreta y borro el entorno y lo vuelvo a declarar
-					this.entorno = null;
+					this.entorno.dispose();
 					
 					this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
 					
