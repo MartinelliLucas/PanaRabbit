@@ -28,26 +28,6 @@ public class Kamehameha {
 		this.diametro = diametro;
 	}
 
-	void enfriamiento(boolean usado) {
-		this.usado = usado;
-		Timer timer = new Timer ();
-		TimerTask tarea = new TimerTask () {
-
-			@Override
-			public void run() {
-				setUsado(false);
-			}
-
-		};
-		timer.schedule(tarea, 10000);
-	}		
-	public boolean isUsado() {
-		return usado;
-	}
-
-	public void setUsado(boolean usado) {
-		this.usado = usado;
-	}
 
 	void fall () {
 		this.y = y + 0.1;

@@ -1,6 +1,9 @@
 package juego;
 
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import entorno.Entorno;
 import entorno.InterfaceJuego;
 
@@ -14,10 +17,28 @@ public class Juego extends InterfaceJuego
 	private Auto[] autosCalle2;
 	private Kamehameha kame;
 	private Kamehameha circulo;
-	
+	private boolean flagCd;
 	// Variables y métodos propios de cada grupo
 	
-	
+	// metodo enfriamiento kame y auto ;
+	void setflagCd (boolean flagCd) {
+		this.flagCd =flagCd;
+	}
+	void enfriamiento(Kamehameha kame, boolean flagCd) {
+		this.flagCd = flagCd;
+		Timer timer = new Timer ();
+		
+		TimerTask tarea = new TimerTask () {
+
+			@Override
+			public void run() {
+				setflagCd (false);
+			}
+
+		};
+		timer.schedule(tarea, 10000);
+	}
+		
 	
 	//metodo para identificar auto colisionado con el kame:
 	
@@ -55,7 +76,7 @@ public class Juego extends InterfaceJuego
 		return false;
 	}
 	// ...
-	public boolean flagCd = true;	
+	
 	public boolean flagKame = false;	
 	{
 		// Inicializa el objeto entorno
@@ -167,14 +188,9 @@ public class Juego extends InterfaceJuego
 		//Creacion, movimiento e interacciones del Kamehameha:
 
 		//crea el objeto kame (que se inicializa como null), asiga true al flag para dibujar y false al flag del cd.
-		if (entorno.sePresiono(entorno.TECLA_ESPACIO)) {
-			this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
-			this.flagKame = true;
-			this.flagCd = false;
-		}
-		
+
 		//evalua el valor de flagCd que controla el cd y dibuja segun corresponda.
-		if (flagCd) {
+		if (!flagCd) {
 			this.circulo.greenKame(this.entorno);
 		}
 		else {
@@ -184,9 +200,19 @@ public class Juego extends InterfaceJuego
 		}
 		
 		//este if dibuja el kame desde que se presiona espacio hasta que impacta.
-		if (flagKame && kame!= null) {
+		if (flagKame && kame!= null && flagCd) {
 			this.kame.renderKame(this.entorno);
 			this.kame.desplazamiento();
+			enfriamiento(this.kame, this.flagCd);
+		}
+		else {
+			if (kame == null && !flagCd) {
+				if (entorno.sePresiono(entorno.TECLA_ESPACIO) && !this.flagCd) {
+					this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
+					this.flagKame = true;
+					this.flagCd = true;
+				}
+			}
 		}
 		// si hay colision o sale de pantalla, deja de dibujar. *si colisiona tambien ya que no puede dibujar un null*
 		if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1) {
