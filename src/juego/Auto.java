@@ -2,7 +2,9 @@ package juego;
 
 import java.awt.Color;
 import entorno.Entorno;
+import entorno.Herramientas;
 
+import java.awt.Image;
 public class Auto {
 
 	private double x;
@@ -35,7 +37,9 @@ public class Auto {
 	}
 	
 	void renderCar(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.BLUE);
+		//entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.BLUE);
+		Image imgauto= Herramientas.cargarImagen("juego/autito5.png");
+		entorno.dibujarImagen(imgauto, this.x, this.y, 0);
 	}
 	
 	double getX() {
