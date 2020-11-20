@@ -12,6 +12,7 @@ public class Auto {
 	private int width;
 	private int height;
 	private double speed;
+	private Image imgauto= Herramientas.cargarImagen("juego/autito5.png");
 	
 	public Auto(double x, double y, int width, int height) {
 		this.x = x;
@@ -37,8 +38,6 @@ public class Auto {
 	}
 	
 	void renderCar(Entorno entorno) {
-		//entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.BLUE);
-		Image imgauto= Herramientas.cargarImagen("juego/autito5.png");
 		entorno.dibujarImagen(imgauto, this.x, this.y, 0);
 	}
 	

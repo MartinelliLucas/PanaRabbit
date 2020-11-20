@@ -11,6 +11,7 @@ public class Conejo {
 	private double y;
 	private int width;
 	private int height;
+	private Image imgConejo= Herramientas.cargarImagen("juego/rogerchico.png");
 		
 	
 	public Conejo(int x, int y, int ancho, int alto) {
@@ -36,8 +37,6 @@ public class Conejo {
 	}
 	
 	void renderRabbit(Entorno entorno) {
-		
-		Image imgConejo= Herramientas.cargarImagen("juego/rogerchico.png");
 		entorno.dibujarImagen(imgConejo, this.x, this.y, 0);
 	}
 	
