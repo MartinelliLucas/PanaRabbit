@@ -4,8 +4,10 @@ package juego;
 import java.awt.Image;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.awt.Color;
 
 import entorno.Entorno;
+import entorno.Herramientas;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego
@@ -21,6 +23,9 @@ public class Juego extends InterfaceJuego
 	private boolean flagCd = false;
 	private GameOver fin;
 
+	private int salto=0;
+	private int puntaje=0;
+	
 	// Variables y métodos propios de cada grupo
 	
 	// metodo enfriamiento kame y auto ;
@@ -62,7 +67,7 @@ public class Juego extends InterfaceJuego
 		carTimer.schedule(respawn, 5000);
 	}
 	
-	
+  
 	//metodo para identificar auto colisionado con el kame:
 	
 	int colisionAuto (Auto[] arrAuto, Kamehameha kame) {
@@ -133,7 +138,7 @@ public class Juego extends InterfaceJuego
 		this.entorno.iniciar();
 		
 	}
-
+	
 	/**
 	 * Durante el juego, el método tick() será ejecutado en cada instante y 
 	 * por lo tanto es el método más importante de esta clase. Aquí se debe 
@@ -144,9 +149,23 @@ public class Juego extends InterfaceJuego
 	{
 		//Creacion, movimiento e interacciones del conejo:
 		
+		
+		
 		conejo.renderRabbit(this.entorno);
 		conejo.fall();
 		
+		if (colisionAuto(this.autosCalle, this.kame) != -1 || (colisionAuto(this.autosCalle2, this.kame) != -1) ){
+			puntaje=puntaje+5;
+		}
+		entorno.escribirTexto("Puntaje: "+ puntaje, 10, 25);
+			
+		if(entorno.sePresiono(entorno.TECLA_ARRIBA)) {
+			salto++;
+		}
+			
+		entorno.escribirTexto("saltos: " + salto, 10,10);
+		
+			
 				
 		if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight())
 			conejo.moveFordward();
@@ -210,9 +229,18 @@ public class Juego extends InterfaceJuego
 		}
 				
 		//Creacion, movimiento e interacciones del Kamehameha:
-
+		entorno.cambiarFont("arial", 20, Color.MAGENTA);
+		entorno.escribirTexto("KameHameHa", 330, 35);
+		
+		
 		//crea el objeto kame (que se inicializa como null), asiga true al flag para dibujar y false al flag del cd.
-
+		if (entorno.sePresiono(entorno.TECLA_ESPACIO)) {
+			this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
+			this.flagKame = true;
+			this.flagCd = false;
+			Herramientas.play("juego/disparo.wav");
+		}
+		
 		//evalua el valor de flagCd que controla el cd y dibuja segun corresponda.
 		if (!flagCd) {
 			this.circulo.greenKame(this.entorno);

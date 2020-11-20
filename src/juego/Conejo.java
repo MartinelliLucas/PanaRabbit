@@ -1,7 +1,10 @@
 package juego;
 
-import java.awt.Color;
+import java.awt.Color;//sacarlo xq no se usa
+import java.awt.Image;
+
 import entorno.Entorno;
+import entorno.Herramientas;
 
 public class Conejo {
 	private double x;
@@ -33,8 +36,9 @@ public class Conejo {
 	}
 	
 	void renderRabbit(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.WHITE);
-		
+		//entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.WHITE);
+		Image imgConejo= Herramientas.cargarImagen("juego/rogerchico.png");
+		entorno.dibujarImagen(imgConejo, this.x, this.y, 0);
 	}
 	
 	double getX() {
