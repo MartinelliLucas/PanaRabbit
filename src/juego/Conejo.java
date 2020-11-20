@@ -36,7 +36,7 @@ public class Conejo {
 	}
 	
 	void renderRabbit(Entorno entorno) {
-		//entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.WHITE);
+		
 		Image imgConejo= Herramientas.cargarImagen("juego/rogerchico.png");
 		entorno.dibujarImagen(imgConejo, this.x, this.y, 0);
 	}
