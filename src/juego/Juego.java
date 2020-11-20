@@ -103,7 +103,7 @@ public class Juego extends InterfaceJuego
 	public boolean flagKame = false;	
 
 	
-	{
+	void inicio(){
 		// Inicializa el objeto entorno
 	
 		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
@@ -251,38 +251,22 @@ public class Juego extends InterfaceJuego
 			|| this.colisionConejo(autosCalle, conejo)|| this.colisionConejo(autosCalle2, conejo)) {
 				this.fin = new GameOver ();
 				fin.renderGameOver(this.entorno);
-				entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getX()-250 , entorno.getHeight()-100);
+				entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getWidth()-500, entorno.getHeight()-100);
 				if (entorno.sePresiono ('y')) {
 					// si apreta y borro el entorno y lo vuelvo a declarar
 					this.entorno.dispose();
-					
-					this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
-					
-
-					this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);
-					
-					this.kame = null; 
-					
-					this.circulo = new Kamehameha (entorno.getX()+200, 30 , 20);
-					
-					this.autosCalle = new Auto[3];
-					for (int i = 0; i < this.autosCalle.length; i++) {
-						this.autosCalle[i] = new Auto(i*250,conejo.getY()-200,60,40);
-					}
-					
-					this.autosCalle2 = new Auto[4];
-					for (int i = 0; i < this.autosCalle2.length; i++) {
-						this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,60,40);
-					}
-					// inicio el nuevo entorno
-					this.entorno.iniciar();
-			
+					this.inicio();
 				}
 				if (entorno.sePresiono('n')) {
 					// cierro ventana ??? PD NO cierra la ventana SI SE APRETO Y primero 
 					this.entorno.dispose();
-				}	
+				}
+				else 
+				{
+					this.conejo.setY(entorno.getHeight() + 100);
+				}
 		}
+		
 	}
 				
 		// Procesamiento de un instante de tiempo
@@ -290,9 +274,9 @@ public class Juego extends InterfaceJuego
 	
 	
 
-	@SuppressWarnings("unused")
 	public static void main(String[] args)
 	{
 		Juego juego = new Juego();
+		juego.inicio();
 	}
 }

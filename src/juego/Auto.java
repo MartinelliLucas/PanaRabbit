@@ -31,7 +31,7 @@ public class Auto {
 	}
 	
 	void fall() {
-		this.y = y+0.1;
+		this.y = y+0.4;
 	}
 	
 	void renderCar(Entorno entorno) {

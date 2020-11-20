@@ -27,7 +27,7 @@ public class Kamehameha {
 		this.c = c;
 		this.diametro = diametro;
 	}
-
+	
 	
 	void desplazamiento () {
 		this.y = y - 5;
