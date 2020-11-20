@@ -16,14 +16,14 @@ import javax.swing.ImageIcon;
 		private Image imagen;
 		
 		public GameOver () {
-			this.x = 0 ;
-			this.y = 0 ;
+			this.x = 400 ;
+			this.y = 300 ;
 			ImageIcon img = new ImageIcon (this.getClass().getResource(this.fin));
 			this.imagen= img.getImage();
 		}
 		
 		void renderGameOver (Entorno entorno) {
-			entorno.dibujarImagen(this.imagen, entorno.getX()- 150, entorno.getY()+100, 0);
+			entorno.dibujarImagen(this.imagen, this.x, this.y, 0);
 	}
 
 	
