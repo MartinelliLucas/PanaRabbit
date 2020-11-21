@@ -20,21 +20,21 @@ public class Juego extends InterfaceJuego
 	private Auto[] autosCalle2;
 	private Kamehameha kame;
 	private Kamehameha circulo;
-	// indica si V = tiene cd el kame F = no tiene CD
-	private boolean flagCd;
+	private Inicio inicio;
 	private GameOver fin;
-
-
 	private int salto=0;
 	private int puntaje=0;
 	
-
-	private Inicio inicio;
-
 	// Variables y métodos propios de cada grupo
+	
+	// indica si V = tiene cd el kame F = no tiene CD
+	private boolean flagCd;
+	// boolean para saber si dibuja o no el kame
 	private boolean flagKame;
 	//si es el comienzo del juego = true
 	private boolean flagInicio = true;
+	
+	
 	// metodo enfriamiento kame y auto ;
 	void setflagCd (boolean flagCd) {
 		this.flagCd =flagCd;
@@ -74,9 +74,7 @@ public class Juego extends InterfaceJuego
 		carTimer.schedule(respawn, 5000);
 	}
 	
-  
-	//metodo para identificar auto colisionado con el kame:
-	
+	//metodo para identificar auto colisionado con el kame:	
 	int colisionAuto (Auto[] arrAuto, Kamehameha kame) {
 		if(kame == null) {
 			return -1;
@@ -90,11 +88,10 @@ public class Juego extends InterfaceJuego
 				kame.getY() > (arrAuto[i].getY() - arrAuto[i].getHeight()/2)) {
 				return i;
 			}
-
 		}	
-
 		return -1;
 	}
+	
 	// metodo de colision auto con conejo
 	boolean colisionConejo (Auto[] arrAuto, Conejo conejo) {
 		for (int i = 0; i < arrAuto.length; i++) {
@@ -111,10 +108,7 @@ public class Juego extends InterfaceJuego
 		return false;
 	}
 
-
-
-
-	
+// metodo para iniciar el jueego, lo implementamos para poder reiniciar el juego si el jugador pierde	
 	void inicio(){
 		// Inicializa el objeto entorno
 
@@ -122,27 +116,24 @@ public class Juego extends InterfaceJuego
 
 		// Inicializar lo que haga falta para el juego
 	
-		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);
-			
-		this.kame = null; // debe ser null para que no se dispare automaticamente al iniciar.
-			
-		this.circulo = new Kamehameha (entorno.getX()+200, 30 , 20);
-			
+		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);	
+		this.kame = null; // debe ser null para que no se dispare automaticamente al iniciar.	
+		this.circulo = new Kamehameha (entorno.getX()+200, 30 , 20);	
 		this.autosCalle = new Auto[3];
 		this.flagCd = false;
 		this.flagKame = false;
+		
 		for (int i = 0; i < this.autosCalle.length; i++) {
 			this.autosCalle[i] = new Auto(i*250,conejo.getY()-200,60,40);
-		}
-			
+		}	
 		this.autosCalle2 = new Auto[4];
+		
 		for (int i = 0; i < this.autosCalle2.length; i++) {
 			this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,60,40);
 		}	
-
 		this.inicio = new Inicio();
+		
 	// Inicia el juego!
-	
 		this.entorno.iniciar();	
 	}
 
@@ -152,31 +143,26 @@ public class Juego extends InterfaceJuego
 	 * actualizar el estado interno del juego para simular el paso del tiempo 
 	 * (ver el enunciado del TP para mayor detalle).
 	 */
-	public void tick()
-	{
-
-		if (entorno.sePresiono(entorno.TECLA_ENTER)) {
+public void tick()	// Procesamiento de un instante de tiempo
+{
+		if (entorno.sePresiono(entorno.TECLA_ENTER)) 
+		{
 			inicio.setY(1000);
 			this.flagInicio=false;
-			
-
 		}
-		//Creacion, movimiento e interacciones del conejo:
-		if (!this.flagInicio) {
 			
-		
+		if (!this.flagInicio) 
+		{
+			//Creacion, movimiento e interacciones del conejo:
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
-			
-					
+						
 			if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight())
 				conejo.moveFordward();
 			if(entorno.sePresiono(entorno.TECLA_DERECHA) && conejo.getX() < entorno.getWidth() - conejo.getWidth())
 				conejo.moveRight();
 			if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX()> conejo.getWidth()/2)
 				conejo.moveLeft();
-			
-			
 			if(colisionConejo(autosCalle, conejo) || colisionConejo(autosCalle2, conejo)) {
 				this.conejo.setX(400);
 				this.conejo.setY(this.entorno.getHeight()+50);
@@ -215,8 +201,7 @@ public class Juego extends InterfaceJuego
 				this.autosCalle2[i].moveBackwards();
 				this.autosCalle2[i].fall();
 				this.autosCalle2[i].setSpeed(1.5);
-				
-							
+								
 				if (autosCalle2[i].getX() < 0) {
 					autosCalle2[i].setX(entorno.getWidth());
 				}
@@ -228,29 +213,18 @@ public class Juego extends InterfaceJuego
 					this.kame = null;
 					carRespawn(autosCalle2);
 				}	
-				
-				
 			}
 					
 			//Creacion, movimiento e interacciones del Kamehameha:
-	
-			//crea el objeto kame (que se inicializa como null), asiga true al flag para dibujar y false al flag del cd.
-	
+			entorno.cambiarFont("arial", 16, Color.CYAN);
+			entorno.escribirTexto("KameHameHa", 625, 35);
 			//evalua el valor de flagCd que controla el cd y dibuja segun corresponda.
 			if (!flagCd) {
 				this.circulo.greenKame(this.entorno);
 			}
 			else {
 				this.circulo.redKame(this.entorno);
-			}
-			
-				
-			//Creacion, movimiento e interacciones del Kamehameha:
-				entorno.cambiarFont("arial", 16, Color.CYAN);
-				entorno.escribirTexto("KameHameHa", 625, 35);
-				
-
-			
+			}	
 			/*evalua que pasa cuando el kame es null y termino el cd !! esto vale tambien para el comienzo ya que el cd es falso
 			y el objeto se inicializo como null!! */
 	
@@ -264,25 +238,21 @@ public class Juego extends InterfaceJuego
 			}
 	
 			//este if dibuja el kame desde que se presiona espacio hasta que impacta y da lugar al enfriamiento del poder.
-			if (flagKame && kame!= null ) {
+			if (flagKame) {
 				this.kame.renderKame(this.entorno);
 				this.kame.desplazamiento();
-			if (this.kame.getY() <=0 ) { // si se va de la pantalla lo pone como null
-				kame = null ;
-	
-				this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
-				this.flagKame = true;
-				this.flagCd = true;
-				enfriamiento(this.kame, this.flagCd);
+				if (this.kame.getY() <= 0 ) { // si se va de la pantalla lo pone como null
+					this.flagKame=false;//deja de dibujarlo
+					kame = null ;
+				}
 			}
-		
-				// si hay colision o sale de pantalla, deja de dibujar. *si colisiona tambien ya que no puede dibujar un null*
+			// si hay colision o sale de pantalla, deja de dibujar. *si colisiona tambien ya que no puede dibujar un null*
 			if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1 ) {
-				flagKame = false;
+				this.flagKame=false;//deja de dibujarlo
 			}
-		}	
-				//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
-			if(this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
+		}
+			//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
+			if (this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
 					|| this.colisionConejo(autosCalle, conejo)|| this.colisionConejo(autosCalle2, conejo)) 
 			{
 					this.conejo.setY(2000);
@@ -291,34 +261,22 @@ public class Juego extends InterfaceJuego
 					entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getWidth()-500, entorno.getHeight()-100);
 					
 					if (entorno.sePresiono ('y')) 
-					{
-						// si apreta y borro el entorno y lo vuelvo a declarar
+					{// si apreta y cierro ventana y vuelvo a iniciar
 						this.entorno.dispose();
 						this.inicio();
 					}
 					if (entorno.sePresiono('n')) {
-						// cierro ventana ??? PD NO cierra la ventana SI SE APRETO Y primero 
+						// cierro ventana 
 						this.entorno.dispose();
-					}
-					
-
+					}	
 			}
-		
-	}	
 			
-		if (this.flagInicio) {
-				
+		//flaginicio			
+		if (this.flagInicio) {	
 			inicio.renderInicio(this.entorno);	
-		}
-		
-	
-		
+		}		
 		
 }
-		// Procesamiento de un instante de tiempo
-			// ...
-	
-	
 
 	public static void main(String[] args)
 	{
