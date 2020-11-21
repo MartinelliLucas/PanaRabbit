@@ -232,14 +232,14 @@ public class Juego extends InterfaceJuego
 		entorno.cambiarFont("arial", 20, Color.MAGENTA);
 		entorno.escribirTexto("KameHameHa", 330, 35);
 		
-		
-		//crea el objeto kame (que se inicializa como null), asiga true al flag para dibujar y false al flag del cd.
-		if (entorno.sePresiono(entorno.TECLA_ESPACIO)) {
-			this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
-			this.flagKame = true;
-			this.flagCd = false;
-			Herramientas.play("juego/disparo.wav");
-		}
+		//ACA SE CHOTEO EL CD. ESTABA DUPLICADO LA CONDICION. LINEA 255.
+//		//crea el objeto kame (que se inicializa como null), asiga true al flag para dibujar y false al flag del cd.
+//		if (entorno.sePresiono(entorno.TECLA_ESPACIO)) {
+//			this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
+//			this.flagKame = true;
+//			this.flagCd = false;
+//			Herramientas.play("juego/disparo.wav"); 
+//		}
 		
 		//evalua el valor de flagCd que controla el cd y dibuja segun corresponda.
 		if (!flagCd) {
@@ -257,7 +257,8 @@ public class Juego extends InterfaceJuego
 			this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
 			this.flagKame = true;
 			this.flagCd = true;
-			enfriamiento(this.kame, this.flagCd);
+			Herramientas.play("juego/disparo.wav");
+			enfriamiento(this.kame, this.flagCd);			
 		}
 
 		//este if dibuja el kame desde que se presiona espacio hasta que impacta y da lugar al enfriamiento del poder.
