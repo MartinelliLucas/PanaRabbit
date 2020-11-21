@@ -1,7 +1,7 @@
 package juego;
 
 
-import juego.Juego;
+
 import java.awt.Image;
 import entorno.Entorno;
 import javax.swing.ImageIcon;
