@@ -63,10 +63,10 @@ public class Juego extends InterfaceJuego
 			public void run() {
 				for (int i = 0; i < arrAuto.length; i++) {
 					if( i == 0 && arrAuto[i] == null) {
-						arrAuto[i] = new Auto(arrAuto[i+1].getX()-250,arrAuto[i+1].getY(),60,40);
+						arrAuto[i] = new Auto(arrAuto[i+1].getX()-250,arrAuto[i+1].getY(),100,60);
 					}
 					if (arrAuto[i] == null) {
-						arrAuto[i] = new Auto(arrAuto[i-1].getX()+250,arrAuto[i-1].getY(),60,40);
+						arrAuto[i] = new Auto(arrAuto[i-1].getX()+250,arrAuto[i-1].getY(),100,60);
 					}
 				}
 			}
@@ -124,12 +124,12 @@ public class Juego extends InterfaceJuego
 		this.flagKame = false;
 		
 		for (int i = 0; i < this.autosCalle.length; i++) {
-			this.autosCalle[i] = new Auto(i*250,conejo.getY()-200,60,40);
+			this.autosCalle[i] = new Auto(i*250,conejo.getY()-200,100,60);
 		}	
 		this.autosCalle2 = new Auto[4];
 		
 		for (int i = 0; i < this.autosCalle2.length; i++) {
-			this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,60,40);
+			this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,100,60);
 		}	
 		this.inicio = new Inicio();
 		
@@ -228,8 +228,8 @@ public void tick()	// Procesamiento de un instante de tiempo
 			/*evalua que pasa cuando el kame es null y termino el cd !! esto vale tambien para el comienzo ya que el cd es falso
 			y el objeto se inicializo como null!! */
 	
-			if (kame == null && !flagCd && entorno.sePresiono(entorno.TECLA_ESPACIO)) { 
-				
+			if (kame == null && !flagCd && entorno.sePresiono(entorno.TECLA_ESPACIO)) 
+			{ 
 				this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,40,70);
 				this.flagKame = true;
 				this.flagCd = true;
@@ -248,7 +248,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 			}
 			// si hay colision o sale de pantalla, deja de dibujar. *si colisiona tambien ya que no puede dibujar un null*
 			if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1 ) {
-				this.flagKame=false;//deja de dibujarlo
+				this.flagKame= false;//deja de dibujarlo
 			}
 		}
 			//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
