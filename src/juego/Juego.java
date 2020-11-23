@@ -197,7 +197,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 					continue;
 				}	
 				
-				this.autosCalle2[i].renderCar(this.entorno);
+				this.autosCalle2[i].renderCarDer(this.entorno);
 				this.autosCalle2[i].moveBackwards();
 				this.autosCalle2[i].fall();
 				this.autosCalle2[i].setSpeed(1.5);
@@ -230,7 +230,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 	
 			if (kame == null && !flagCd && entorno.sePresiono(entorno.TECLA_ESPACIO)) { 
 				
-				this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,10,20);
+				this.kame = new Kamehameha(conejo.getX(),conejo.getY()-conejo.getHeight()/2,40,70);
 				this.flagKame = true;
 				this.flagCd = true;
 				Herramientas.play("juego/disparo.wav");

@@ -12,7 +12,8 @@ public class Auto {
 	private int width;
 	private int height;
 	private double speed;
-	private Image imgauto= Herramientas.cargarImagen("juego/autito5.png");
+	private Image imgautoder= Herramientas.cargarImagen("juego/autito5.png");
+	private Image imgautoizq= Herramientas.cargarImagen("imagenes/autoder.png");
 	
 	public Auto(double x, double y, int width, int height) {
 		this.x = x;
@@ -38,7 +39,10 @@ public class Auto {
 	}
 	
 	void renderCar(Entorno entorno) {
-		entorno.dibujarImagen(imgauto, this.x, this.y, 0);
+		entorno.dibujarImagen(imgautoizq, this.x, this.y, 0);
+	}
+	void renderCarDer (Entorno entorno) {
+		entorno.dibujarImagen(imgautoder, this.x, this.y, 0);
 	}
 	
 	double getX() {

@@ -1,9 +1,11 @@
 package juego;
 import java.awt.Color;
+import java.awt.Image;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import entorno.Entorno;
+import entorno.Herramientas;
 
 public class Kamehameha {
 	private int z;
@@ -13,7 +15,7 @@ public class Kamehameha {
 	private double y;
 	private int ancho;
 	private int alto;
-
+	private Image kameha= Herramientas.cargarImagen("imagenes/kame.png"); 
 
 	public Kamehameha (double x, double y , int ancho, int alto) {		
 		this.x = x;
@@ -49,7 +51,7 @@ public class Kamehameha {
 		this.alto = alto;
 	}
 	void renderKame(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y, this.ancho, this.alto, 0, Color.CYAN);	
+		entorno.dibujarImagen(kameha, this.x, this.y, 0);	
 	}
 	void greenKame (Entorno entorno) {
 		entorno.dibujarCirculo(this.z, this.c, this.diametro, Color.GREEN);
