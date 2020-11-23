@@ -129,7 +129,7 @@ public class Juego extends InterfaceJuego
 		this.autosCalle2 = new Auto[4];
 		
 		for (int i = 0; i < this.autosCalle2.length; i++) {
-			this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,100,60);
+			this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,60,40);
 		}	
 		this.inicio = new Inicio();
 		
@@ -186,6 +186,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 				
 				if (colisionAuto(this.autosCalle, this.kame) != -1){
 					this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
+					this.flagKame= false;//deja de dibujarlo
 					this.kame = null;
 					carRespawn(autosCalle);
 				}
@@ -210,6 +211,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 				}
 				if (colisionAuto(this.autosCalle2, this.kame) != -1){
 					this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
+					this.flagKame= false;//deja de dibujarlo
 					this.kame = null;
 					carRespawn(autosCalle2);
 				}	
@@ -245,10 +247,6 @@ public void tick()	// Procesamiento de un instante de tiempo
 					this.flagKame=false;//deja de dibujarlo
 					kame = null ;
 				}
-			}
-			// si hay colision o sale de pantalla, deja de dibujar. *si colisiona tambien ya que no puede dibujar un null*
-			if (colisionAuto(autosCalle,kame) != -1 || colisionAuto(autosCalle2, kame) != -1 ) {
-				this.flagKame= false;//deja de dibujarlo
 			}
 		}
 			//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
