@@ -116,7 +116,7 @@ public class Juego extends InterfaceJuego
 
 		// Inicializar lo que haga falta para el juego
 	
-		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 40,40);	
+		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 80,40);	
 		this.kame = null; // debe ser null para que no se dispare automaticamente al iniciar.	
 		this.circulo = new Kamehameha (entorno.getX()+200, 30 , 20);	
 		this.autosCalle = new Auto[3];
@@ -159,9 +159,9 @@ public void tick()	// Procesamiento de un instante de tiempo
 						
 			if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight())
 				conejo.moveFordward();
-			if(entorno.sePresiono(entorno.TECLA_DERECHA) && conejo.getX() < entorno.getWidth() - conejo.getWidth())
+			if(entorno.sePresiono(entorno.TECLA_DERECHA) && conejo.getX() < entorno.getWidth() - 85)
 				conejo.moveRight();
-			if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX()> conejo.getWidth()/2)
+			if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX()> 85)
 				conejo.moveLeft();
 			if(colisionConejo(autosCalle, conejo) || colisionConejo(autosCalle2, conejo)) {
 				this.conejo.setX(400);
