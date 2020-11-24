@@ -16,6 +16,7 @@ public class Juego extends InterfaceJuego
 	
 	private Entorno entorno;
 	private Conejo conejo;
+	private Calle[] Calles1;
 	private Auto[] autosCalle;	
 	private Auto[] autosCalle2;
 	private Kamehameha kame;
@@ -108,7 +109,7 @@ public class Juego extends InterfaceJuego
 		return false;
 	}
 
-// metodo para iniciar el jueego, lo implementamos para poder reiniciar el juego si el jugador pierde	
+// metodo para iniciar el juego, lo implementamos para poder reiniciar el juego si el jugador pierde	
 	void inicio(){
 		// Inicializa el objeto entorno
 
@@ -117,6 +118,9 @@ public class Juego extends InterfaceJuego
 		// Inicializar lo que haga falta para el juego
 	
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 80,40);	
+		this.Calles1 = new Calle[2];
+		this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()-190,this.entorno.getWidth(),200);
+		this.Calles1[1] = new Calle(this.entorno.getWidth()/2,0-this.Calles1[0].getHeight(),this.entorno.getWidth(),200);
 		this.kame = null; // debe ser null para que no se dispare automaticamente al iniciar.	
 		this.circulo = new Kamehameha (entorno.getX()+200, 30 , 20);	
 		this.autosCalle = new Auto[3];
@@ -131,6 +135,9 @@ public class Juego extends InterfaceJuego
 		for (int i = 0; i < this.autosCalle2.length; i++) {
 			this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,60,40);
 		}	
+		
+		
+		
 		this.inicio = new Inicio();
 		
 	// Inicia el juego!
@@ -153,6 +160,16 @@ public void tick()	// Procesamiento de un instante de tiempo
 			
 		if (!this.flagInicio) 
 		{
+			// Creacion y movimiento de las calles:
+			this.Calles1[0].renderCalle(this.entorno);
+			this.Calles1[1].renderCalle(this.entorno);
+			this.Calles1[0].fall();
+			if (this.Calles1[0].getY() + this.Calles1[0].getHeight()/2 > this.entorno.getHeight()) {
+				this.Calles1[1].fall();
+			}
+			
+			
+			
 			//Creacion, movimiento e interacciones del conejo:
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
