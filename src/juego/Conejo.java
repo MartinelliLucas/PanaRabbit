@@ -1,18 +1,20 @@
 package juego;
 
-import java.awt.Color;//sacarlo xq no se usa
+import java.awt.Color;
 import java.awt.Image;
 
 import entorno.Entorno;
 import entorno.Herramientas;
 
 public class Conejo {
+	
 	private double x;
 	private double y;
 	private int width;
 	private int height;
 	private Image imgConejo= Herramientas.cargarImagen("juego/rogerchico.png");
-		
+	
+
 	
 	public Conejo(int x, int y, int ancho, int alto) {
 		this.x = x;
@@ -62,6 +64,10 @@ public class Conejo {
 	void setY(double y) {
 		this.y = y;
 	}
-
+	public Kamehameha disparar () {	
+		Kamehameha kame = new Kamehameha(this.x, this.y, 40, 70);
+		return kame ;
+		
+	}
 	
 }
