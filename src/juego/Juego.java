@@ -23,8 +23,8 @@ public class Juego extends InterfaceJuego
 	private Kamehameha circulo;
 	private Inicio inicio;
 	private GameOver fin;
-	private int salto=0;
-	private int puntaje=0;
+	private int salto;
+	private int puntaje;
 	
 	// Variables y métodos propios de cada grupo
 	
@@ -64,10 +64,10 @@ public class Juego extends InterfaceJuego
 			public void run() {
 				for (int i = 0; i < arrAuto.length; i++) {
 					if( i == 0 && arrAuto[i] == null) {
-						arrAuto[i] = new Auto(arrAuto[i+1].getX()-250,arrAuto[i+1].getY(),100,60);
+						arrAuto[i] = new Auto(arrAuto[i+1].getX()- 200,arrAuto[i+1].getY(),100,60);
 					}
 					if (arrAuto[i] == null) {
-						arrAuto[i] = new Auto(arrAuto[i-1].getX()+250,arrAuto[i-1].getY(),100,60);
+						arrAuto[i] = new Auto(arrAuto[i-1].getX()+arrAuto[i-1].getWidth()+50,arrAuto[i-1].getY(),100,60);
 					}
 				}
 			}
@@ -119,8 +119,8 @@ public class Juego extends InterfaceJuego
 	
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 80,40);	
 		this.Calles1 = new Calle[2];
-		this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()-190,this.entorno.getWidth(),200);
-		this.Calles1[1] = new Calle(this.entorno.getWidth()/2,0-this.Calles1[0].getHeight(),this.entorno.getWidth(),200);
+		this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-150,this.entorno.getWidth(),200);
+		this.Calles1[1] = new Calle(this.entorno.getWidth()/2,-95,this.entorno.getWidth(),200);
 		this.kame = null; // debe ser null para que no se dispare automaticamente al iniciar.	
 		this.circulo = new Kamehameha (entorno.getX()+200, 30 , 20);	
 		this.autosCalle = new Auto[3];
@@ -128,7 +128,7 @@ public class Juego extends InterfaceJuego
 		this.flagKame = false;
 		
 		for (int i = 0; i < this.autosCalle.length; i++) {
-			this.autosCalle[i] = new Auto(i*250,conejo.getY()-200,100,60);
+			this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+40,100,60);
 		}	
 		this.autosCalle2 = new Auto[4];
 		
@@ -164,12 +164,10 @@ public void tick()	// Procesamiento de un instante de tiempo
 			this.Calles1[0].renderCalle(this.entorno);
 			this.Calles1[1].renderCalle(this.entorno);
 			this.Calles1[0].fall();
-			if (this.Calles1[0].getY() + this.Calles1[0].getHeight()/2 > this.entorno.getHeight()) {
+			if (this.Calles1[0].getY() + this.Calles1[0].getHeight()/2 +50 > this.entorno.getHeight()) {
 				this.Calles1[1].fall();
 			}
-			
-			
-			
+					
 			//Creacion, movimiento e interacciones del conejo:
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
