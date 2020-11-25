@@ -170,12 +170,18 @@ public void tick()	// Procesamiento de un instante de tiempo
 			
 			
 			
+			
+				
+			
+				
 			//Creacion, movimiento e interacciones del conejo:
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
 						
-			if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight())
+			if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight()) {
 				conejo.moveFordward();
+				salto++;
+			}
 			if(entorno.sePresiono(entorno.TECLA_DERECHA) && conejo.getX() < entorno.getWidth() - 85)
 				conejo.moveRight();
 			if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX()> 85)
@@ -184,7 +190,8 @@ public void tick()	// Procesamiento de un instante de tiempo
 				this.conejo.setX(400);
 				this.conejo.setY(this.entorno.getHeight()+50);
 			}
-			
+			entorno.cambiarFont("arial", 16, Color.CYAN);
+			entorno.escribirTexto("saltos: " + salto, 10,15);
 			//Creacion, movimiento e interacciones de los autos:
 			
 			for (int i = 0; i < this.autosCalle.length; i++) {
@@ -205,6 +212,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 					this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
 					this.flagKame= false;//deja de dibujarlo
 					this.kame = null;
+					puntaje=puntaje+5;
 					carRespawn(autosCalle);
 				}
 				
@@ -233,10 +241,11 @@ public void tick()	// Procesamiento de un instante de tiempo
 					carRespawn(autosCalle2);
 				}	
 			}
-					
+			entorno.cambiarFont("arial", 16, Color.CYAN);
+			entorno.escribirTexto("Puntaje: "+ puntaje, 10, 30);	
 			//Creacion, movimiento e interacciones del Kamehameha:
 			entorno.cambiarFont("arial", 16, Color.CYAN);
-			entorno.escribirTexto("KameHameHa", 625, 35);
+			entorno.escribirTexto("KameHameHa", 485, 35);
 			//evalua el valor de flagCd que controla el cd y dibuja segun corresponda.
 			if (!flagCd) {
 				this.circulo.greenKame(this.entorno);
