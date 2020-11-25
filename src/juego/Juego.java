@@ -14,9 +14,11 @@ public class Juego extends InterfaceJuego
 	
 	private Entorno entorno;
 	private Conejo conejo;
+	private Calle[] Calles1;
 	private Auto[] autosCalle;	
 	private Auto[] autosCalle2;
 	private Kamehameha kame;
+
 	private int salto;
 	private int puntaje;
 	
@@ -52,10 +54,10 @@ public class Juego extends InterfaceJuego
 			public void run() {
 				for (int i = 0; i < arrAuto.length; i++) {
 					if( i == 0 && arrAuto[i] == null) {
-						arrAuto[i] = new Auto(arrAuto[i+1].getX()-250,arrAuto[i+1].getY(),100,60);
+						arrAuto[i] = new Auto(arrAuto[i+1].getX()- 200,arrAuto[i+1].getY(),100,60);
 					}
 					if (arrAuto[i] == null) {
-						arrAuto[i] = new Auto(arrAuto[i-1].getX()+250,arrAuto[i-1].getY(),100,60);
+						arrAuto[i] = new Auto(arrAuto[i-1].getX()+arrAuto[i-1].getWidth()+50,arrAuto[i-1].getY(),100,60);
 					}
 				}
 			}
@@ -97,7 +99,7 @@ public class Juego extends InterfaceJuego
 		return false;
 	}
 
-// metodo para iniciar el jueego, lo implementamos para poder reiniciar el juego si el jugador pierde	
+// metodo para iniciar el juego, lo implementamos para poder reiniciar el juego si el jugador pierde	
 	void inicio(){
 		// Inicializa el objeto entorno
 
@@ -106,19 +108,22 @@ public class Juego extends InterfaceJuego
 		// Inicializar lo que haga falta para el juego
 	
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 80,40);	
-		
-		this.kame = null ;
+
+		this.Calles1 = new Calle[2];
+		this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-150,this.entorno.getWidth(),200);
+		this.Calles1[1] = new Calle(this.entorno.getWidth()/2,-95,this.entorno.getWidth(),200);
+		this.kame = null; // debe ser null para que no se dispare automaticamente al iniciar.	
 		this.isKameAvailable= true;
 		this.autosCalle = new Auto[3];
 		for (int i = 0; i < this.autosCalle.length; i++) {
-			this.autosCalle[i] = new Auto(i*250,conejo.getY()-200,100,60);
+			this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+40,100,60);
 		}	
 		
 		this.autosCalle2 = new Auto[4];
 		for (int i = 0; i < this.autosCalle2.length; i++) {
 			this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,60,40);
 		}	
-				
+
 	// Inicia el juego!
 		this.entorno.iniciar();	
 	}
@@ -139,6 +144,14 @@ public void tick()	// Procesamiento de un instante de tiempo
 			
 		if (!this.isStartScreenActive) 
 		{
+			// Creacion y movimiento de las calles:
+			this.Calles1[0].renderCalle(this.entorno);
+			this.Calles1[1].renderCalle(this.entorno);
+			this.Calles1[0].fall();
+			if (this.Calles1[0].getY() + this.Calles1[0].getHeight()/2 +50 > this.entorno.getHeight()) {
+				this.Calles1[1].fall();
+			}
+					
 			//Creacion, movimiento e interacciones del conejo:
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
