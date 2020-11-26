@@ -278,7 +278,11 @@ public void tick()	// Procesamiento de un instante de tiempo
 				this.kame.renderKame(this.entorno);
 				this.kame.desplazamiento();
 				this.enfriamiento(false);
+				if (this.kame.getY() < 0) {
+					this.kame = null;
+				}
 			}
+
 		
 			//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
 			if (this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
