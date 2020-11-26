@@ -102,6 +102,38 @@ public class Juego extends InterfaceJuego
 		return false;
 	}
 
+	void crearAutosDer(Auto[] arrAuto) {
+		for (int i = 0; i < arrAuto.length; i++) {
+			if (arrAuto[i] == null)
+				continue;
+			arrAuto[i].renderCarDer(this.entorno);
+			arrAuto[i].moveForward();
+			arrAuto[i].fall();
+						
+			if (arrAuto[i].getX() > entorno.getWidth()) {
+				arrAuto[i].setX(0);
+			}
+			if (arrAuto[i].getY() > entorno.getHeight()-50) {
+				arrAuto[i].setY(0);
+			}
+		}
+	}
+	void crearAutosIzq(Auto[] arrAuto) {
+		for (int i = 0; i < arrAuto.length; i++) {
+			if (arrAuto[i] == null)
+				continue;
+			arrAuto[i].renderCar(this.entorno);
+			arrAuto[i].moveBackwards();
+			arrAuto[i].fall();
+						
+			if (arrAuto[i].getX() < 0) {
+				arrAuto[i].setX(entorno.getWidth());
+			}
+			if (arrAuto[i].getY() > entorno.getHeight()-50) {
+				arrAuto[i].setY(0);
+			}
+		}
+	}
 // metodo para iniciar el juego, lo implementamos para poder reiniciar el juego si el jugador pierde	
 	void inicio(){
 		// Inicializa el objeto entorno
@@ -187,125 +219,42 @@ public void tick()	// Procesamiento de un instante de tiempo
 			
 			//Creacion, movimiento e interacciones de los autos:
 			
-			for (int i = 0; i < this.autosCalle.length; i++) {
-				if (autosCalle[i] == null)
-					continue;
-				this.autosCalle[i].renderCar(this.entorno);
-				this.autosCalle[i].moveForward();
-				this.autosCalle[i].fall();
-							
-				if (this.autosCalle[i].getX() > entorno.getWidth()) {
-					this.autosCalle[i].setX(0);
-				}
-				if (this.autosCalle[i].getY() > entorno.getHeight()-50) {
-					this.autosCalle[i].setY(0);
-				}
-				
-				if (colisionAuto(this.autosCalle, this.kame) != -1){
-					this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
-					//this.flagKame= false;//deja de dibujarlo
-					this.kame = null;
-					carRespawn(autosCalle);
+			crearAutosDer(autosCalle);
+			
+			if (colisionAuto(this.autosCalle, this.kame) != -1){
+				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
+				this.kame = null;
+				carRespawn(autosCalle);
 				} 
+						
+			crearAutosIzq(autosCalle2);
 				
-			}
-	
-			for (int i = 0; i < this.autosCalle2.length; i++) {
-				if (autosCalle2[i] == null) {
-					continue;
+			if (colisionAuto(this.autosCalle2, this.kame) != -1){
+				this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
+				this.kame = null;
+				carRespawn(autosCalle2);
 				}	
-				
-				this.autosCalle2[i].renderCarDer(this.entorno);
-				this.autosCalle2[i].moveBackwards();
-				this.autosCalle2[i].fall();
-				this.autosCalle2[i].setSpeed(1.5);
-								
-				if (autosCalle2[i].getX() < 0) {
-					autosCalle2[i].setX(entorno.getWidth());
-				}
-				if (autosCalle2[i].getY() > entorno.getHeight()-50) {
-					autosCalle2[i].setY(0);
-				}
-				if (colisionAuto(this.autosCalle2, this.kame) != -1){
-					this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
-					//this.flagKame= false;//deja de dibujarlo
-					this.kame = null;
-					carRespawn(autosCalle2);
-				}	
-			}
-			
-			for (int i = 0; i < this.autosCalle3.length; i++) {
-				if (this.autosCalle3[i] == null)
-					continue;
-				this.autosCalle3[i].setSpeed(1.5);
-				this.autosCalle3[i].renderCar(this.entorno);
-				this.autosCalle3[i].moveForward();
-				this.autosCalle3[i].fall();
-							
-				if (this.autosCalle3[i].getX() > entorno.getWidth()) {
-					this.autosCalle3[i].setX(0);
-				}
-				if (this.autosCalle3[i].getY() > entorno.getHeight()-50) {
-					this.autosCalle3[i].setY(0);
-				}
-				
-				if (colisionAuto(this.autosCalle3, this.kame) != -1){
-					this.autosCalle3[colisionAuto(this.autosCalle3,this.kame)] = null;
-					//this.flagKame= false;//deja de dibujarlo
-					this.kame = null;
-					carRespawn(autosCalle3);
+						
+			crearAutosDer(autosCalle3);
+			if (colisionAuto(this.autosCalle3, this.kame) != -1){
+				this.autosCalle3[colisionAuto(this.autosCalle3,this.kame)] = null;
+				this.kame = null;
+				carRespawn(autosCalle3);
 				} 
 				
-			}
-			
-			for (int i = 0; i < this.autosCalle4.length; i++) {
-				if (this.autosCalle4[i] == null)
-					continue;
-				this.autosCalle4[i].setSpeed(1);
-				this.autosCalle4[i].renderCarDer(this.entorno);
-				this.autosCalle4[i].moveBackwards();
-				this.autosCalle4[i].fall();
-							
-				if (autosCalle4[i].getX() < 0) {
-					autosCalle4[i].setX(entorno.getWidth());
-				}
-				if (autosCalle4[i].getY() > entorno.getHeight()-50) {
-					autosCalle4[i].setY(0);
-				}	
-				
-				if (colisionAuto(this.autosCalle4, this.kame) != -1){
-					this.autosCalle4[colisionAuto(this.autosCalle4,this.kame)] = null;
-					//this.flagKame= false;//deja de dibujarlo
-					this.kame = null;
-					carRespawn(autosCalle4);
+			crearAutosIzq(autosCalle4);	
+			if (colisionAuto(this.autosCalle4, this.kame) != -1){
+				this.autosCalle4[colisionAuto(this.autosCalle4,this.kame)] = null;
+				this.kame = null;
+				carRespawn(autosCalle4);
+				} 
+			crearAutosDer(autosCalle5);	
+			if (colisionAuto(this.autosCalle5, this.kame) != -1){
+				this.autosCalle5[colisionAuto(this.autosCalle5,this.kame)] = null;
+				this.kame = null;
+				carRespawn(autosCalle5);
 				} 
 				
-			}
-			
-			for (int i = 0; i < this.autosCalle5.length; i++) {
-				if (this.autosCalle5[i] == null)
-					continue;
-				this.autosCalle5[i].setSpeed(2.5);
-				this.autosCalle5[i].renderCar(this.entorno);
-				this.autosCalle5[i].moveForward();
-				this.autosCalle5[i].fall();
-							
-				if (this.autosCalle5[i].getX() > entorno.getWidth()) {
-					this.autosCalle5[i].setX(0);
-				}
-				if (this.autosCalle5[i].getY() > entorno.getHeight()-50) {
-					this.autosCalle5[i].setY(0);
-				}
-				
-				if (colisionAuto(this.autosCalle5, this.kame) != -1){
-					this.autosCalle5[colisionAuto(this.autosCalle5,this.kame)] = null;
-					//this.flagKame= false;//deja de dibujarlo
-					this.kame = null;
-					carRespawn(autosCalle5);
-				} 
-				
-			}
-			
 			//Creacion, movimiento e interacciones del Kamehameha:
 			entorno.cambiarFont("arial", 16, Color.CYAN);
 			entorno.escribirTexto("KameHameHa", 625, 40);
