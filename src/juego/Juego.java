@@ -202,6 +202,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 			if (this.Calles1[1].getY() + this.Calles1[1].getHeight()/2 +50 > this.entorno.getHeight()) {
 				this.Calles1[0].setY(-135);
 			}
+			
 			//Creacion, movimiento e interacciones del conejo:
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
@@ -217,10 +218,29 @@ public void tick()	// Procesamiento de un instante de tiempo
 				this.conejo.setY(this.entorno.getHeight()+50);
 			}
 			
+			//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
+			if (this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
+					|| colisionConejo(this.autosCalle, this.conejo)|| colisionConejo(this.autosCalle2, this.conejo) || colisionConejo(this.autosCalle3, this.conejo)
+					|| colisionConejo(this.autosCalle4, this.conejo) || colisionConejo(this.autosCalle5,this.conejo))
+			{
+					this.conejo.setY(2000);
+					Image imagenFin = Herramientas.cargarImagen("imagenes/fin.jpg");
+					entorno.dibujarImagen(imagenFin, entorno.getWidth()/2,entorno.getHeight()/2, 0);
+					entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getWidth()-500, entorno.getHeight()-100);
+					
+					if (entorno.sePresiono ('y')) 
+					{// si apreta y cierro ventana y vuelvo a iniciar
+						this.entorno.dispose();
+						this.inicio();
+					}
+					if (entorno.sePresiono('n')) {
+						// cierro ventana 
+						this.entorno.dispose();
+					}	
+			}
+					
 			//Creacion, movimiento e interacciones de los autos:
-			
 			crearAutosDer(autosCalle);
-			
 			if (colisionAuto(this.autosCalle, this.kame) != -1){
 				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
 				this.kame = null;
@@ -228,7 +248,6 @@ public void tick()	// Procesamiento de un instante de tiempo
 				} 
 						
 			crearAutosIzq(autosCalle2);
-				
 			if (colisionAuto(this.autosCalle2, this.kame) != -1){
 				this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
 				this.kame = null;
@@ -282,33 +301,12 @@ public void tick()	// Procesamiento de un instante de tiempo
 					this.kame = null;
 				}
 			}
-
-		
-			//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
-			if (this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
-					|| this.colisionConejo(autosCalle, conejo)|| this.colisionConejo(autosCalle2, conejo) || this.colisionConejo(this.autosCalle3, this.conejo)) 
-			{
-					this.conejo.setY(2000);
-					Image imagenFin = Herramientas.cargarImagen("imagenes/fin.jpg");
-					entorno.dibujarImagen(imagenFin, entorno.getX()-152,entorno.getY()+100, 0);
-					entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getWidth()-500, entorno.getHeight()-100);
-					
-					if (entorno.sePresiono ('y')) 
-					{// si apreta y cierro ventana y vuelvo a iniciar
-						this.entorno.dispose();
-						this.inicio();
-					}
-					if (entorno.sePresiono('n')) {
-						// cierro ventana 
-						this.entorno.dispose();
-					}	
-			}
 	}	
 		//flaginicio			
 	if (this.isStartScreenActive) 
 	{		
 		Image imagenInicio = Herramientas.cargarImagen("imagenes/inicio.jpg");
-		entorno.dibujarImagen(imagenInicio, entorno.getX()-155, entorno.getY()+100, 0);		
+		entorno.dibujarImagen(imagenInicio, entorno.getWidth()/2, entorno.getHeight()/2, 0);		
 	}		
 		
 }

@@ -1,8 +1,6 @@
 package juego;
 
 import java.awt.Image;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import entorno.Entorno;
 import entorno.Herramientas;
@@ -14,14 +12,12 @@ public class Kamehameha {
 	private int ancho;
 	private int alto;
 	private Image kameha= Herramientas.cargarImagen("imagenes/kame.png"); 
-	private boolean seDisparo;
-	
+		
 	public Kamehameha (double x, double y , int ancho, int alto) {		
 		this.x = x;
 		this.y = y;
 		this.ancho = ancho;
 		this.alto = alto; // 
-	//	seDisparo = seDisparo;
 	}
 
 	void desplazamiento () {
@@ -39,9 +35,6 @@ public class Kamehameha {
 	void renderKame(Entorno entorno) {
 		entorno.dibujarImagen(kameha, this.x, this.y, 0);	
 	}
-
-
-	
 
 	public double getX() {
 		return this.x;

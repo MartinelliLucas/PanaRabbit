@@ -1,10 +1,10 @@
 package juego;
 
-import java.awt.Color; // esto si no lo van a usar hay que borrarlo.
 import java.awt.Image;
 
 import entorno.Entorno;
 import entorno.Herramientas;
+
 
 public class Conejo {
 	
