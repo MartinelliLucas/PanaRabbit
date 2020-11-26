@@ -4,6 +4,9 @@ package juego;
 import java.awt.Image;
 import java.util.Timer;
 import java.util.TimerTask;
+
+
+
 import java.awt.Color;
 
 import entorno.Entorno;
@@ -23,8 +26,11 @@ public class Juego extends InterfaceJuego
 	private Kamehameha circulo;
 	private Inicio inicio;
 	private GameOver fin;
-	private int salto=0;
-	private int puntaje=0;
+	private int salto;
+	private int puntaje;
+	private Image icono;
+	
+	
 	
 	// Variables y métodos propios de cada grupo
 	
@@ -126,6 +132,10 @@ public class Juego extends InterfaceJuego
 		this.autosCalle = new Auto[3];
 		this.flagCd = false;
 		this.flagKame = false;
+		this.salto=0;
+		this.puntaje=0;
+		this.icono=Herramientas.cargarImagen("juego/conejo.png");
+		
 		
 		for (int i = 0; i < this.autosCalle.length; i++) {
 			this.autosCalle[i] = new Auto(i*250,conejo.getY()-200,100,60);
@@ -142,7 +152,9 @@ public class Juego extends InterfaceJuego
 		
 	// Inicia el juego!
 		this.entorno.iniciar();	
+		this.entorno.setIconImage(icono);
 	}
+	
 
 	/**
 	 * Durante el juego, el método tick() será ejecutado en cada instante y 
@@ -150,6 +162,7 @@ public class Juego extends InterfaceJuego
 	 * actualizar el estado interno del juego para simular el paso del tiempo 
 	 * (ver el enunciado del TP para mayor detalle).
 	 */
+	
 public void tick()	// Procesamiento de un instante de tiempo
 {
 		if (entorno.sePresiono(entorno.TECLA_ENTER)) 
@@ -175,6 +188,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 			
 				
 			//Creacion, movimiento e interacciones del conejo:
+			
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
 						
@@ -305,6 +319,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 	public static void main(String[] args)
 	{
 		Juego juego = new Juego();
+		Herramientas.loop("juego/music.wav");
 		juego.inicio();
 	}
 }

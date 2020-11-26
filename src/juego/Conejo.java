@@ -11,7 +11,7 @@ public class Conejo {
 	private double y;
 	private int width;
 	private int height;
-	private Image imgConejo= Herramientas.cargarImagen("juego/rogerchico.png");
+	private static Image imgConejo;
 		
 	
 	public Conejo(int x, int y, int ancho, int alto) {
@@ -19,6 +19,7 @@ public class Conejo {
 		this.y = y;
 		this.width = ancho;
 		this.height = alto;
+		Conejo.imgConejo= Herramientas.cargarImagen("juego/rogerchico.png");
 	}
 	
 	void fall() {

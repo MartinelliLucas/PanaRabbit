@@ -12,8 +12,8 @@ public class Auto {
 	private int width;
 	private int height;
 	private double speed;
-	private Image imgautoder= Herramientas.cargarImagen("juego/autito5.png");
-	private Image imgautoizq= Herramientas.cargarImagen("imagenes/autoder.png");
+	private static Image imgautoder;
+	private static Image imgautoizq; 
 	
 	public Auto(double x, double y, int width, int height) {
 		this.x = x;
@@ -21,6 +21,8 @@ public class Auto {
 		this.width = width;
 		this.height = height;
 		this.speed = 2;
+		Auto.imgautoder= Herramientas.cargarImagen("juego/autito5.png");
+		Auto.imgautoizq=Herramientas.cargarImagen("imagenes/autoder.png");
 	}
 	
 	void setSpeed(double Speed) {
