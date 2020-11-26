@@ -26,9 +26,10 @@ public class Juego extends InterfaceJuego
 	private Kamehameha kame;
 	private int salto;
 	private int puntaje;
-	private Image icono;
+	private static Image icono = Herramientas.cargarImagen("juego/conejo.png");
 	
 	// Variables y métodos propios de cada grupo
+	
 	// banderas necesarias para evitar que el tick renderize objetos no deseados
 	private boolean isStartScreenActive=true;	//indica si se debe mostrar la pantalla inicial o no
 	private boolean isKameAvailable=true; 		//si es true deja lanzar si es false debe esperar al enfriamiento
@@ -146,7 +147,6 @@ public class Juego extends InterfaceJuego
 		// Inicializar lo que haga falta para el juego
 	
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 32,50);	
-
 		this.Calles1 = new Calle[2];
 		this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-150,this.entorno.getWidth(),250);
 		this.Calles1[1] = new Calle(this.entorno.getWidth()/2,-135,this.entorno.getWidth(),250);
@@ -155,8 +155,7 @@ public class Juego extends InterfaceJuego
 		this.autosCalle = new Auto[3];
 		this.salto=0;
 		this.puntaje=0;
-		this.icono=Herramientas.cargarImagen("juego/conejo.png");
-
+		
 		for (int i = 0; i < this.autosCalle.length; i++) {
 			this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+100,59,20);
 		}	
@@ -224,7 +223,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 			conejo.fall();
 						
 			if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight()) {
-				conejo.moveFordward();
+				conejo.moveForward();
 				salto++;
 			}	
 			if(entorno.sePresiono(entorno.TECLA_DERECHA) && conejo.getX() < entorno.getWidth()- this.conejo.getWidth()-5)
@@ -311,6 +310,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 					
 					if (entorno.sePresiono ('y')) 
 					{// si apreta y cierro ventana y vuelvo a iniciar
+						this.entorno.dispose();
 						this.inicio();
 					}
 					if (entorno.sePresiono('n')) {
@@ -319,9 +319,8 @@ public void tick()	// Procesamiento de un instante de tiempo
 						System.exit(0);
 					}	
 			}
-
-			
 	}	
+	
 		//flaginicio			
 	if (this.isStartScreenActive) 
 	{		

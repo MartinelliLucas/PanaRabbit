@@ -25,7 +25,7 @@ public class Conejo {
 		this.y = y+0.4;
 	}
 	
-	void moveFordward() {
+	void moveForward() {
 		this.y = y - 30;
 	}
 	void moveLeft() {
