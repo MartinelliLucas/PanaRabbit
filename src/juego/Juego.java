@@ -17,6 +17,9 @@ public class Juego extends InterfaceJuego
 	private Calle[] Calles1;
 	private Auto[] autosCalle;	
 	private Auto[] autosCalle2;
+	private Auto[] autosCalle3;
+	private Auto[] autosCalle4;
+	private Auto[] autosCalle5;
 	private Kamehameha kame;
 
 	private int salto;
@@ -107,23 +110,36 @@ public class Juego extends InterfaceJuego
 
 		// Inicializar lo que haga falta para el juego
 	
-		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 80,40);	
+		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 32,50);	
 
 		this.Calles1 = new Calle[2];
-		this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-150,this.entorno.getWidth(),200);
-		this.Calles1[1] = new Calle(this.entorno.getWidth()/2,-95,this.entorno.getWidth(),200);
+		this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-150,this.entorno.getWidth(),250);
+		this.Calles1[1] = new Calle(this.entorno.getWidth()/2,-135,this.entorno.getWidth(),250);
 		this.kame = null; // debe ser null para que no se dispare automaticamente al iniciar.	
 		this.isKameAvailable= true;
 		this.autosCalle = new Auto[3];
 		for (int i = 0; i < this.autosCalle.length; i++) {
-			this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+40,100,60);
+			this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+100,59,20);
 		}	
-		
 		this.autosCalle2 = new Auto[4];
 		for (int i = 0; i < this.autosCalle2.length; i++) {
-			this.autosCalle2[i] = new Auto(i*180,conejo.getY()-400,60,40);
+			this.autosCalle2[i] = new Auto(i*180,this.autosCalle[0].getY()-55,50,22);
+			
 		}	
-
+		this.autosCalle3 = new Auto[3];
+		for (int i = 0; i < this.autosCalle3.length; i++) {
+			this.autosCalle3[i] = new Auto(i*250,this.autosCalle2[0].getY()-55,50,22);
+		}
+		
+		this.autosCalle4 = new Auto[5];
+		for (int i = 0; i < this.autosCalle4.length; i++) {
+			this.autosCalle4[i] = new Auto(i*180,this.autosCalle3[0].getY()-55,50,22);
+		}
+		this.autosCalle5 = new Auto[4];
+		for (int i = 0; i < this.autosCalle5.length; i++) {
+			this.autosCalle5[i] = new Auto(i*180,this.autosCalle4[0].getY()-55,50,22);
+		}
+		
 	// Inicia el juego!
 		this.entorno.iniciar();	
 	}
@@ -151,16 +167,18 @@ public void tick()	// Procesamiento de un instante de tiempo
 			if (this.Calles1[0].getY() + this.Calles1[0].getHeight()/2 +50 > this.entorno.getHeight()) {
 				this.Calles1[1].fall();
 			}
-					
+			if (this.Calles1[1].getY() + this.Calles1[1].getHeight()/2 +50 > this.entorno.getHeight()) {
+				this.Calles1[0].setY(-135);
+			}
 			//Creacion, movimiento e interacciones del conejo:
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
 						
 			if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight())
 				conejo.moveFordward();
-			if(entorno.sePresiono(entorno.TECLA_DERECHA) && conejo.getX() < entorno.getWidth() - 85)
+			if(entorno.sePresiono(entorno.TECLA_DERECHA) && conejo.getX() < entorno.getWidth()- this.conejo.getWidth()-5)
 				conejo.moveRight();
-			if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX()> 85)
+			if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX() > 0 + this.conejo.getWidth())
 				conejo.moveLeft();
 			if(colisionConejo(autosCalle, conejo) || colisionConejo(autosCalle2, conejo)) {
 				this.conejo.setX(400);
@@ -215,7 +233,79 @@ public void tick()	// Procesamiento de un instante de tiempo
 					carRespawn(autosCalle2);
 				}	
 			}
-					
+			
+			for (int i = 0; i < this.autosCalle3.length; i++) {
+				if (this.autosCalle3[i] == null)
+					continue;
+				this.autosCalle3[i].setSpeed(1.5);
+				this.autosCalle3[i].renderCar(this.entorno);
+				this.autosCalle3[i].moveForward();
+				this.autosCalle3[i].fall();
+							
+				if (this.autosCalle3[i].getX() > entorno.getWidth()) {
+					this.autosCalle3[i].setX(0);
+				}
+				if (this.autosCalle3[i].getY() > entorno.getHeight()-50) {
+					this.autosCalle3[i].setY(0);
+				}
+				
+				if (colisionAuto(this.autosCalle3, this.kame) != -1){
+					this.autosCalle3[colisionAuto(this.autosCalle3,this.kame)] = null;
+					//this.flagKame= false;//deja de dibujarlo
+					this.kame = null;
+					carRespawn(autosCalle3);
+				} 
+				
+			}
+			
+			for (int i = 0; i < this.autosCalle4.length; i++) {
+				if (this.autosCalle4[i] == null)
+					continue;
+				this.autosCalle4[i].setSpeed(1);
+				this.autosCalle4[i].renderCarDer(this.entorno);
+				this.autosCalle4[i].moveBackwards();
+				this.autosCalle4[i].fall();
+							
+				if (autosCalle4[i].getX() < 0) {
+					autosCalle4[i].setX(entorno.getWidth());
+				}
+				if (autosCalle4[i].getY() > entorno.getHeight()-50) {
+					autosCalle4[i].setY(0);
+				}	
+				
+				if (colisionAuto(this.autosCalle4, this.kame) != -1){
+					this.autosCalle4[colisionAuto(this.autosCalle4,this.kame)] = null;
+					//this.flagKame= false;//deja de dibujarlo
+					this.kame = null;
+					carRespawn(autosCalle4);
+				} 
+				
+			}
+			
+			for (int i = 0; i < this.autosCalle5.length; i++) {
+				if (this.autosCalle5[i] == null)
+					continue;
+				this.autosCalle5[i].setSpeed(2.5);
+				this.autosCalle5[i].renderCar(this.entorno);
+				this.autosCalle5[i].moveForward();
+				this.autosCalle5[i].fall();
+							
+				if (this.autosCalle5[i].getX() > entorno.getWidth()) {
+					this.autosCalle5[i].setX(0);
+				}
+				if (this.autosCalle5[i].getY() > entorno.getHeight()-50) {
+					this.autosCalle5[i].setY(0);
+				}
+				
+				if (colisionAuto(this.autosCalle5, this.kame) != -1){
+					this.autosCalle5[colisionAuto(this.autosCalle5,this.kame)] = null;
+					//this.flagKame= false;//deja de dibujarlo
+					this.kame = null;
+					carRespawn(autosCalle5);
+				} 
+				
+			}
+			
 			//Creacion, movimiento e interacciones del Kamehameha:
 			entorno.cambiarFont("arial", 16, Color.CYAN);
 			entorno.escribirTexto("KameHameHa", 625, 40);
@@ -243,7 +333,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 		
 			//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
 			if (this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
-					|| this.colisionConejo(autosCalle, conejo)|| this.colisionConejo(autosCalle2, conejo)) 
+					|| this.colisionConejo(autosCalle, conejo)|| this.colisionConejo(autosCalle2, conejo) || this.colisionConejo(this.autosCalle3, this.conejo)) 
 			{
 					this.conejo.setY(2000);
 					Image imagenFin = Herramientas.cargarImagen("imagenes/fin.jpg");

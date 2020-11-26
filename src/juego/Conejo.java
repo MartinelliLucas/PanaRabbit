@@ -1,6 +1,6 @@
 package juego;
 
-import java.awt.Color;
+import java.awt.Color; // esto si no lo van a usar hay que borrarlo.
 import java.awt.Image;
 
 import entorno.Entorno;
@@ -31,11 +31,11 @@ public class Conejo {
 		this.y = y - 30;
 	}
 	void moveLeft() {
-		this.x = x - this.width/2;
+		this.x = x - this.width;
 	}
 	
 	void moveRight() {
-		this.x = x + this.width/2;
+		this.x = x + this.width;
 	}
 	
 	void renderRabbit(Entorno entorno) {
