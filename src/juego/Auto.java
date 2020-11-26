@@ -11,8 +11,11 @@ public class Auto {
 	private int width;
 	private int height;
 	private double speed;
-	private Image imgautoizq= Herramientas.cargarImagen("juego/autito5.png");
-	private Image imgautoder= Herramientas.cargarImagen("imagenes/autoder.png");
+
+	private static Image imgautoizq= Herramientas.cargarImagen("juego/autito5.png");
+	private static Image imgautoder= Herramientas.cargarImagen("imagenes/autoder.png");
+
+
 	
 	public Auto(double x, double y, int width, int height) {
 		this.x = x;

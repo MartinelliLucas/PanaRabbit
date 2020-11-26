@@ -2,6 +2,9 @@ package juego;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+
+
 import java.awt.Color;
 import entorno.Entorno;
 import java.awt.Image;
@@ -21,9 +24,9 @@ public class Juego extends InterfaceJuego
 	private Auto[] autosCalle4;
 	private Auto[] autosCalle5;
 	private Kamehameha kame;
-
 	private int salto;
 	private int puntaje;
+	private Image icono;
 	
 	// Variables y métodos propios de cada grupo
 	// banderas necesarias para evitar que el tick renderize objetos no deseados
@@ -150,6 +153,10 @@ public class Juego extends InterfaceJuego
 		this.kame = null; // debe ser null para que no se dispare automaticamente al iniciar.	
 		this.isKameAvailable= true;
 		this.autosCalle = new Auto[3];
+		this.salto=0;
+		this.puntaje=0;
+		this.icono=Herramientas.cargarImagen("juego/conejo.png");
+
 		for (int i = 0; i < this.autosCalle.length; i++) {
 			this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+100,59,20);
 		}	
@@ -174,7 +181,9 @@ public class Juego extends InterfaceJuego
 		
 	// Inicia el juego!
 		this.entorno.iniciar();	
+		this.entorno.setIconImage(icono);
 	}
+	
 
 	/**
 	 * Durante el juego, el método tick() será ejecutado en cada instante y 
@@ -182,6 +191,7 @@ public class Juego extends InterfaceJuego
 	 * actualizar el estado interno del juego para simular el paso del tiempo 
 	 * (ver el enunciado del TP para mayor detalle).
 	 */
+	
 public void tick()	// Procesamiento de un instante de tiempo
 {		
 
@@ -192,6 +202,11 @@ public void tick()	// Procesamiento de un instante de tiempo
 			
 		if (!this.isStartScreenActive) 
 		{
+			entorno.cambiarFont("arial", 16, Color.CYAN);
+			entorno.escribirTexto("saltos: " + salto, 10,15);
+			entorno.escribirTexto("Puntaje: "+ puntaje, 10, 30);		
+			entorno.escribirTexto("KameHameHa", 625, 35);
+						
 			// Creacion y movimiento de las calles:
 			this.Calles1[0].renderCalle(this.entorno);
 			this.Calles1[1].renderCalle(this.entorno);
@@ -202,48 +217,27 @@ public void tick()	// Procesamiento de un instante de tiempo
 			if (this.Calles1[1].getY() + this.Calles1[1].getHeight()/2 +50 > this.entorno.getHeight()) {
 				this.Calles1[0].setY(-135);
 			}
-			
+					
 			//Creacion, movimiento e interacciones del conejo:
+			
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
 						
-			if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight())
+			if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight()) {
 				conejo.moveFordward();
+				salto++;
+			}	
 			if(entorno.sePresiono(entorno.TECLA_DERECHA) && conejo.getX() < entorno.getWidth()- this.conejo.getWidth()-5)
 				conejo.moveRight();
 			if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX() > 0 + this.conejo.getWidth())
 				conejo.moveLeft();
-			if(colisionConejo(autosCalle, conejo) || colisionConejo(autosCalle2, conejo)) {
-				this.conejo.setX(400);
-				this.conejo.setY(this.entorno.getHeight()+50);
-			}
-			
-			//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
-			if (this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
-					|| colisionConejo(this.autosCalle, this.conejo)|| colisionConejo(this.autosCalle2, this.conejo) || colisionConejo(this.autosCalle3, this.conejo)
-					|| colisionConejo(this.autosCalle4, this.conejo) || colisionConejo(this.autosCalle5,this.conejo))
-			{
-					this.conejo.setY(2000);
-					Image imagenFin = Herramientas.cargarImagen("imagenes/fin.jpg");
-					entorno.dibujarImagen(imagenFin, entorno.getWidth()/2,entorno.getHeight()/2, 0);
-					entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getWidth()-500, entorno.getHeight()-100);
-					
-					if (entorno.sePresiono ('y')) 
-					{// si apreta y cierro ventana y vuelvo a iniciar
-						this.entorno.dispose();
-						this.inicio();
-					}
-					if (entorno.sePresiono('n')) {
-						// cierro ventana 
-						this.entorno.dispose();
-					}	
-			}
-					
+
 			//Creacion, movimiento e interacciones de los autos:
 			crearAutosDer(autosCalle);
 			if (colisionAuto(this.autosCalle, this.kame) != -1){
 				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
 				this.kame = null;
+				puntaje=puntaje+5;
 				carRespawn(autosCalle);
 				} 
 						
@@ -251,6 +245,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 			if (colisionAuto(this.autosCalle2, this.kame) != -1){
 				this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
 				this.kame = null;
+				puntaje=puntaje+5;
 				carRespawn(autosCalle2);
 				}	
 						
@@ -258,6 +253,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 			if (colisionAuto(this.autosCalle3, this.kame) != -1){
 				this.autosCalle3[colisionAuto(this.autosCalle3,this.kame)] = null;
 				this.kame = null;
+				puntaje=puntaje+5;
 				carRespawn(autosCalle3);
 				} 
 				
@@ -265,18 +261,19 @@ public void tick()	// Procesamiento de un instante de tiempo
 			if (colisionAuto(this.autosCalle4, this.kame) != -1){
 				this.autosCalle4[colisionAuto(this.autosCalle4,this.kame)] = null;
 				this.kame = null;
+				puntaje=puntaje+5;
 				carRespawn(autosCalle4);
 				} 
 			crearAutosDer(autosCalle5);	
 			if (colisionAuto(this.autosCalle5, this.kame) != -1){
 				this.autosCalle5[colisionAuto(this.autosCalle5,this.kame)] = null;
 				this.kame = null;
+				puntaje=puntaje+5;
 				carRespawn(autosCalle5);
 				} 
 				
-			//Creacion, movimiento e interacciones del Kamehameha:
-			entorno.cambiarFont("arial", 16, Color.CYAN);
-			entorno.escribirTexto("KameHameHa", 625, 40);
+			//Interacciones del Kamehameha:
+			
 			// indicador de uso del kame
 			if (this.isKameAvailable) {
 				entorno.dibujarCirculo(750, 35, 20, Color.GREEN);
@@ -301,6 +298,29 @@ public void tick()	// Procesamiento de un instante de tiempo
 					this.kame = null;
 				}
 			}
+			
+			//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
+			if (this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
+					|| colisionConejo(this.autosCalle, this.conejo)|| colisionConejo(this.autosCalle2, this.conejo) || colisionConejo(this.autosCalle3, this.conejo)
+					|| colisionConejo(this.autosCalle4, this.conejo) || colisionConejo(this.autosCalle5,this.conejo))
+			{
+					this.conejo.setY(2000);
+					Image imagenFin = Herramientas.cargarImagen("imagenes/fin.jpg");
+					entorno.dibujarImagen(imagenFin, entorno.getWidth()/2,entorno.getHeight()/2, 0);
+					entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getWidth()-500, entorno.getHeight()-100);
+					
+					if (entorno.sePresiono ('y')) 
+					{// si apreta y cierro ventana y vuelvo a iniciar
+						this.inicio();
+					}
+					if (entorno.sePresiono('n')) {
+						// cierro ventana 
+						this.entorno.dispose();
+						System.exit(0);
+					}	
+			}
+
+			
 	}	
 		//flaginicio			
 	if (this.isStartScreenActive) 
@@ -314,6 +334,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 public static void main(String[] args)
 	{
 		Juego juego = new Juego();
+		Herramientas.loop("juego/music.wav");
 		juego.inicio();
 	}
 }
