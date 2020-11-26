@@ -27,6 +27,10 @@ public class Juego extends InterfaceJuego
 	private int salto;
 	private int puntaje;
 	private static Image icono = Herramientas.cargarImagen("juego/conejo.png");
+	private Timer carTimer;
+	private Timer timerEnfriamiento;
+	private TimerTask tarea;
+	private TimerTask respawn;
 	
 	// Variables y métodos propios de cada grupo
 	
@@ -40,9 +44,9 @@ public class Juego extends InterfaceJuego
 	}
 	void enfriamiento(boolean flagKame) {
 		this.isKameAvailable = flagKame;
-		Timer timer = new Timer ();
+		timerEnfriamiento = new Timer ();
 		
-		TimerTask tarea = new TimerTask () {
+		tarea = new TimerTask () {
 
 			@Override
 			public void run() {
@@ -50,13 +54,13 @@ public class Juego extends InterfaceJuego
 			}
 
 		};
-		timer.schedule(tarea, 5000);
-	}	
+		timerEnfriamiento.schedule(tarea, 5000);
+	}
+	
 	//metodo para respawnear autos:
 	void carRespawn(Auto[] arrAuto) {
-		Timer carTimer = new Timer();
-		
-		TimerTask respawn = new TimerTask() {
+		carTimer = new Timer();
+		respawn = new TimerTask() {
 			@Override
 			public void run() {
 				for (int i = 0; i < arrAuto.length; i++) {
@@ -141,9 +145,10 @@ public class Juego extends InterfaceJuego
 // metodo para iniciar el juego, lo implementamos para poder reiniciar el juego si el jugador pierde	
 	void inicio(){
 		// Inicializa el objeto entorno
-
+		this.entorno.getComponent(0).setBackground(Color.GREEN);
+		this.entorno.getComponent(0).repaint();
 		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
-
+		
 		// Inicializar lo que haga falta para el juego
 	
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 32,50);	
@@ -311,6 +316,12 @@ public void tick()	// Procesamiento de un instante de tiempo
 					if (entorno.sePresiono ('y')) 
 					{// si apreta y cierro ventana y vuelvo a iniciar
 						this.entorno.dispose();
+						respawn.cancel();
+						carTimer.cancel();
+						carTimer.purge();
+						tarea.cancel();
+						timerEnfriamiento.cancel();
+						timerEnfriamiento.purge();
 						this.inicio();
 					}
 					if (entorno.sePresiono('n')) {
