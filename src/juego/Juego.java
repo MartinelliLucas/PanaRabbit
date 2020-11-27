@@ -145,9 +145,10 @@ public class Juego extends InterfaceJuego
 // metodo para iniciar el juego, lo implementamos para poder reiniciar el juego si el jugador pierde	
 	void inicio(){
 		// Inicializa el objeto entorno
+
+		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
 		this.entorno.getComponent(0).setBackground(Color.GREEN);
 		this.entorno.getComponent(0).repaint();
-		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
 		
 		// Inicializar lo que haga falta para el juego
 	
@@ -316,12 +317,6 @@ public void tick()	// Procesamiento de un instante de tiempo
 					if (entorno.sePresiono ('y')) 
 					{// si apreta y cierro ventana y vuelvo a iniciar
 						this.entorno.dispose();
-						respawn.cancel();
-						carTimer.cancel();
-						carTimer.purge();
-						tarea.cancel();
-						timerEnfriamiento.cancel();
-						timerEnfriamiento.purge();
 						this.inicio();
 					}
 					if (entorno.sePresiono('n')) {
