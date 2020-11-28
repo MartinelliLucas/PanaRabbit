@@ -11,8 +11,9 @@ public class Kamehameha {
 	private double y;
 	private int ancho;
 	private int alto;
-	private Image kameha= Herramientas.cargarImagen("imagenes/kame.png"); 
-		
+	private static Image kameha= Herramientas.cargarImagen("imagenes/kame.png"); 
+
+	
 	public Kamehameha (double x, double y , int ancho, int alto) {		
 		this.x = x;
 		this.y = y;
@@ -22,14 +23,6 @@ public class Kamehameha {
 
 	void desplazamiento () {
 		this.y = y - 5;
-	}
-
-	public void setX(double d) {
-		this.x = d;
-	}
-
-	public void setY(double d) {
-		this.y = d;
 	}
 	
 	void renderKame(Entorno entorno) {
