@@ -134,9 +134,7 @@ public class Juego extends InterfaceJuego
 		// Inicializa el objeto entorno
 
 		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
-		this.entorno.getComponent(0).setBackground(Color.GREEN);
-		this.entorno.getComponent(0).repaint();
-		
+	
 		// Inicializar lo que haga falta para el juego
 		
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 32,50);	
@@ -201,7 +199,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 
 			Image grass = Herramientas.cargarImagen("imagenes/grass.jpg");
 			entorno.dibujarImagen(grass, 400, 300, 0);
-			entorno.cambiarFont("arial", 16, Color.white);
+			entorno.cambiarFont("arial", 18, Color.white);
 			entorno.escribirTexto("Saltos: " + salto, 50,15);
 			entorno.escribirTexto("Puntaje: "+ puntaje, 50, 30);
 			entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
