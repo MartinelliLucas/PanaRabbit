@@ -66,8 +66,7 @@ public class Conejo {
 	}
 	public Kamehameha disparar () {	
 		Kamehameha kame = new Kamehameha(this.x, this.y, 40, 70);
-		return kame ;
-		
+		return kame ;		
 	}
 	
 }

@@ -12,13 +12,25 @@ public class Kamehameha {
 	private int ancho;
 	private int alto;
 	private Image kameha= Herramientas.cargarImagen("imagenes/kame.png"); 
-		
+	private boolean isAvailable = true;	
+	
 	public Kamehameha (double x, double y , int ancho, int alto) {		
 		this.x = x;
 		this.y = y;
 		this.ancho = ancho;
 		this.alto = alto; // 
 	}
+	
+	
+	public boolean isAvailable() {
+		return isAvailable;
+	}
+
+
+	public void setAvailable(boolean isAvailable) {
+		this.isAvailable = isAvailable;
+	}
+
 
 	void desplazamiento () {
 		this.y = y - 5;
