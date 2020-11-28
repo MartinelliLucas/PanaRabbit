@@ -265,6 +265,13 @@ public void tick()	// Procesamiento de un instante de tiempo
 				}		
 			}	
 		// creacion e interacciones del rayo
+			entorno.cambiarFont("console", 18, Color.white);
+			entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
+			if (this.isRayoAvailable) {
+				Image iconoRayo = Herramientas.cargarImagen("imagenes/rayoAvailable.png");
+				entorno.dibujarImagen(iconoRayo, 750, 35, 0);
+			}
+
 			if (entorno.sePresiono(entorno.TECLA_SHIFT) && this.isRayoAvailable) {
 				this.rayo = conejo.rayo();
 				this.timerRayo = System.currentTimeMillis();
