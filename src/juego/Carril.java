@@ -8,6 +8,7 @@ public class Carril {
 	Auto[] arrAuto;
 	boolean dirDerecha;
 
+
 	public Carril(double y, int cantAutos, boolean direccion) {
 		this.y = y;
 		this.arrAuto = new Auto[cantAutos];
@@ -29,7 +30,9 @@ public class Carril {
 			}
 		}
 	}
-
+	public Auto [] arrAuto() {
+		return this.arrAuto;
+	}
 	void renderCarril(Entorno entorno) {
 		for (int i = 0; i < arrAuto.length; i++) {
 			if (arrAuto[i] != null) {

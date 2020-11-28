@@ -37,7 +37,9 @@ public class Calle {
 			carriles[i].renderCarril(entorno);
 		}
 	}
-	
+	public Carril [] getCarril(){
+		return this.carriles;
+	}
 	public double getX() {
 		return x;
 	}
