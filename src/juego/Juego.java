@@ -198,12 +198,13 @@ public void tick()	// Procesamiento de un instante de tiempo
 
 		if (!this.isStartScreenActive && !this.isGameOver) 
 		{	
-			entorno.cambiarFont("arial", 16, Color.CYAN);
-			entorno.escribirTexto("saltos: " + salto, 10,15);
-			entorno.escribirTexto("Puntaje: "+ puntaje, 10, 30);
+
 			Image grass = Herramientas.cargarImagen("imagenes/grass.jpg");
 			entorno.dibujarImagen(grass, 400, 300, 0);
-
+			entorno.cambiarFont("arial", 16, Color.white);
+			entorno.escribirTexto("Saltos: " + salto, 50,15);
+			entorno.escribirTexto("Puntaje: "+ puntaje, 50, 30);
+			entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
 			// Creacion y movimiento de las calles:
 			this.Calles1[0].renderCalle(this.entorno);
 			this.Calles1[1].renderCalle(this.entorno);
@@ -236,6 +237,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 //				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
 //				this.kame = null;
 //				carRespawn(autosCalle);
+//				puntaje += 5;
 //				} 
 						
 			crearAutosIzq(autosCalle2);
@@ -243,6 +245,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 //				this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
 //				this.kame = null;
 //				carRespawn(autosCalle2);
+//				puntaje += 5;
 //				}	
 						
 			crearAutosDer(autosCalle3);
@@ -250,6 +253,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 //				this.autosCalle3[colisionAuto(this.autosCalle3,this.kame)] = null;
 //				this.kame = null;
 //				carRespawn(autosCalle3);
+//				puntaje += 5;
 //				} 
 				
 			crearAutosIzq(autosCalle4);	
@@ -257,12 +261,14 @@ public void tick()	// Procesamiento de un instante de tiempo
 //				this.autosCalle4[colisionAuto(this.autosCalle4,this.kame)] = null;
 //				this.kame = null;
 //				carRespawn(autosCalle4);
+//			 	puntaje += 5;
 //				} 
 			crearAutosDer(autosCalle5);	
 //			if (colisionAuto(this.autosCalle5, this.kame) != -1){
 //				this.autosCalle5[colisionAuto(this.autosCalle5,this.kame)] = null;
 //				this.kame = null;
 //				carRespawn(autosCalle5);
+//				puntaje += 5;
 //				} 
 				
 			//Creacion, movimiento e interacciones del Kamehameha:
@@ -290,8 +296,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 				}		
 			}	
 		// creacion e interacciones del rayo
-			entorno.cambiarFont("console", 18, Color.white);
-			entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
+
 			if (this.isRayoAvailable) {
 				Image iconoRayo = Herramientas.cargarImagen("imagenes/rayoAvailable.png");
 				entorno.dibujarImagen(iconoRayo, 750, 35, 0);
@@ -320,7 +325,11 @@ public void tick()	// Procesamiento de un instante de tiempo
 			if (zanahoria != null) {
 				this.zanahoria.renderZanahoria(this.entorno);
 				this.zanahoria.fall();
-				if (this.zanahoria.getY() > entorno.getHeight() -50 || conejo.comer(this.zanahoria)) {
+				if (this.zanahoria.getY() > entorno.getHeight() -50 ) {
+					this.zanahoria = null;
+				}
+				if (conejo.comer(this.zanahoria)) {
+					puntaje += 25;
 					this.zanahoria = null;
 				}
 			}
