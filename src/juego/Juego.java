@@ -17,12 +17,8 @@ public class Juego extends InterfaceJuego
 	
 	private Entorno entorno;
 	private Conejo conejo;
-	private Calle[] Calles1;
-	private Auto[] autosCalle;	
-	private Auto[] autosCalle2;
-	private Auto[] autosCalle3;
-	private Auto[] autosCalle4;
-	private Auto[] autosCalle5;
+	private Calle calle1;
+	private Calle calle2;
 	private static Image icono = Herramientas.cargarImagen("juego/conejo.png");
 	private Timer carTimer;
 	private TimerTask respawn;
@@ -30,10 +26,10 @@ public class Juego extends InterfaceJuego
 	private Rayo rayo;
 	private long timerRayo;
 	private Zanahoria zanahoria ;
-	int contadorKame; //entero qe controla los lanzamientos del kame
+	private int contadorKame; //entero qe controla los lanzamientos del kame
 	private int salto;
 	private int puntaje;
-
+	
 
 	// Variables y métodos propios de cada grupo
 	
@@ -42,6 +38,34 @@ public class Juego extends InterfaceJuego
 	private boolean isGameOver = false; // indica si se debe mostrar la pantalla final o no
 	private boolean isRayoAvailable = true;
 	
+	void hayColision (Auto[] arrAuto, Kamehameha[] arrKames) {
+		double xGuardado;
+		double yGuardado;
+		long timerSpawn;
+		
+		for (int k = 0; k < arrKames.length; k++) {
+			int indiceColision = colisionAuto(arrAuto,arrKames[k]);
+			if (indiceColision == -1){
+				continue;
+			}
+			else{
+				arrKames[k] = null;
+				xGuardado = arrAuto[indiceColision].getX();
+				yGuardado = arrAuto[indiceColision].getY();
+				
+				arrAuto[indiceColision] = null;
+				timerSpawn = System.currentTimeMillis();
+				puntaje += 5;
+				contadorKame -= 1;
+				System.out.println(xGuardado + yGuardado);
+				
+				}
+			if (System.currentTimeMillis() - timerSpawn > 2000) {
+				arrAuto[indiceColision] = new Auto(xGuardado,yGuardado,100,60);
+			}
+		}
+	}
+		
 	//metodo para respawnear autos:
 	void carRespawn(Auto[] arrAuto) {
 		carTimer = new Timer();
@@ -50,6 +74,9 @@ public class Juego extends InterfaceJuego
 			public void run() {
 				for (int i = 0; i < arrAuto.length; i++) {
 					if( i == 0 && arrAuto[i] == null) {
+						if (arrAuto[i+1] == null) {
+							arrAuto[i] = new Auto(arrAuto[arrAuto.length-1].getX()- 200,arrAuto[arrAuto.length-1].getY(),100,60);
+						}
 						arrAuto[i] = new Auto(arrAuto[i+1].getX()- 200,arrAuto[i+1].getY(),100,60);
 					}
 					if (arrAuto[i] == null) {
@@ -134,43 +161,21 @@ public class Juego extends InterfaceJuego
 		// Inicializa el objeto entorno
 
 		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
-	
+
 		// Inicializar lo que haga falta para el juego
 		
 		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 32,50);	
 		this.kames = new Kamehameha [3];
 		this.contadorKame = 0;
-		this.Calles1 = new Calle[2];
-		this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-150,this.entorno.getWidth(),250);
-		this.Calles1[1] = new Calle(this.entorno.getWidth()/2,-135,this.entorno.getWidth(),250);
+		this.calle1 = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-250,this.entorno.getWidth(),220);
+		this.calle2 = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()-300,this.entorno.getWidth(),220);
 		this.rayo = null;
 		this.timerRayo = 0;
 		this.zanahoria = null;
-		this.autosCalle = new Auto[3];
 		this.salto=0;
 		this.puntaje=0;
 		
-		for (int i = 0; i < this.autosCalle.length; i++) {
-			this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+100,50,20);
-		}	
-		this.autosCalle2 = new Auto[4];
-		for (int i = 0; i < this.autosCalle2.length; i++) {
-			this.autosCalle2[i] = new Auto(i*180,this.autosCalle[0].getY()-55,50,22);
-			
-		}	
-		this.autosCalle3 = new Auto[3];
-		for (int i = 0; i < this.autosCalle3.length; i++) {
-			this.autosCalle3[i] = new Auto(i*250,this.autosCalle2[0].getY()-55,50,22);
-		}
 		
-		this.autosCalle4 = new Auto[5];
-		for (int i = 0; i < this.autosCalle4.length; i++) {
-			this.autosCalle4[i] = new Auto(i*180,this.autosCalle3[0].getY()-55,50,22);
-		}
-		this.autosCalle5 = new Auto[4];
-		for (int i = 0; i < this.autosCalle5.length; i++) {
-			this.autosCalle5[i] = new Auto(i*180,this.autosCalle4[0].getY()-55,50,22);
-		}
 		
 	// Inicia el juego!
 		this.entorno.iniciar();	
@@ -197,23 +202,17 @@ public void tick()	// Procesamiento de un instante de tiempo
 		if (!this.isStartScreenActive && !this.isGameOver) 
 		{	
 
+
 			Image grass = Herramientas.cargarImagen("imagenes/grass.jpg");
 			entorno.dibujarImagen(grass, 400, 300, 0);
-			entorno.cambiarFont("arial", 18, Color.white);
-			entorno.escribirTexto("Saltos: " + salto, 50,15);
-			entorno.escribirTexto("Puntaje: "+ puntaje, 50, 30);
-			entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
+
 			// Creacion y movimiento de las calles:
-			this.Calles1[0].renderCalle(this.entorno);
-			this.Calles1[1].renderCalle(this.entorno);
-			this.Calles1[0].fall();
-			if (this.Calles1[0].getY() + this.Calles1[0].getHeight()/2 +50 > this.entorno.getHeight()) {
-				this.Calles1[1].fall();
-			}
-			if (this.Calles1[1].getY() + this.Calles1[1].getHeight()/2 +50 > this.entorno.getHeight()) {
-				this.Calles1[0].setY(-135);
-			}
-					
+			this.calle1.renderCalle(this.entorno);
+			this.calle1.fall();
+			
+			this.calle2.renderCalle(this.entorno);
+			this.calle2.fall();
+			
 			//Creacion, movimiento e interacciones del conejo:
 			
 			conejo.renderRabbit(this.entorno);
@@ -227,49 +226,9 @@ public void tick()	// Procesamiento de un instante de tiempo
 				conejo.moveRight();
 			if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX() > 0 + this.conejo.getWidth())
 				conejo.moveLeft();
-
-			//Creacion, movimiento e interacciones de los autos:
-			crearAutosDer(autosCalle);
-
-//			if (colisionAuto(this.autosCalle, this.kame) != -1){
-//				this.autosCalle[colisionAuto(this.autosCalle,this.kame)] = null;
-//				this.kame = null;
-//				carRespawn(autosCalle);
-//				puntaje += 5;
-//				} 
-						
-			crearAutosIzq(autosCalle2);
-//			if (colisionAuto(this.autosCalle2, this.kame) != -1){
-//				this.autosCalle2[colisionAuto(this.autosCalle2,this.kame)] = null;
-//				this.kame = null;
-//				carRespawn(autosCalle2);
-//				puntaje += 5;
-//				}	
-						
-			crearAutosDer(autosCalle3);
-//			if (colisionAuto(this.autosCalle3, this.kame) != -1){
-//				this.autosCalle3[colisionAuto(this.autosCalle3,this.kame)] = null;
-//				this.kame = null;
-//				carRespawn(autosCalle3);
-//				puntaje += 5;
-//				} 
-				
-			crearAutosIzq(autosCalle4);	
-//			if (colisionAuto(this.autosCalle4, this.kame) != -1){
-//				this.autosCalle4[colisionAuto(this.autosCalle4,this.kame)] = null;
-//				this.kame = null;
-//				carRespawn(autosCalle4);
-//			 	puntaje += 5;
-//				} 
-			crearAutosDer(autosCalle5);	
-//			if (colisionAuto(this.autosCalle5, this.kame) != -1){
-//				this.autosCalle5[colisionAuto(this.autosCalle5,this.kame)] = null;
-//				this.kame = null;
-//				carRespawn(autosCalle5);
-//				puntaje += 5;
-//				} 
 				
 			//Creacion, movimiento e interacciones del Kamehameha:
+			
 			// si se presiona espacio entra en el ciclo y busca la primera posicion null y coloca el kame ahi
 			if (entorno.sePresiono(entorno.TECLA_ESPACIO) && contadorKame < 3 ) {
 				for (int i = 0; i < this.kames.length; i++) {
@@ -287,7 +246,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 				if (this.kames[i] != null) {
 					this.kames[i].renderKame(this.entorno);
 					this.kames[i].desplazamiento();
-					if (this.kames[i].getY() < 0) {
+					if (this.kames[i].getY() < 0 ) {
 						this.kames[i] = null;
 						contadorKame -= 1;
 					}
@@ -332,57 +291,63 @@ public void tick()	// Procesamiento de un instante de tiempo
 				}
 			}
 		}
+
+		entorno.cambiarFont("arial", 18, Color.white);
+		entorno.escribirTexto("Saltos: " + salto, 50,15);
+		entorno.escribirTexto("Puntaje: "+ puntaje, 50, 30);
+		entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
+
 			
 		//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
-	if (this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
-			|| colisionConejo(this.autosCalle, this.conejo)|| colisionConejo(this.autosCalle2, this.conejo) || colisionConejo(this.autosCalle3, this.conejo)
-			|| colisionConejo(this.autosCalle4, this.conejo) || colisionConejo(this.autosCalle5,this.conejo)){		
-				
-				this.isGameOver = true;
-				this.conejo.setY(2000);
-				Image imagenFin = Herramientas.cargarImagen("imagenes/fin.jpg");
-				entorno.dibujarImagen(imagenFin, 400,300, 0);
-				entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getWidth()-500, entorno.getHeight()-100);
-				
-				if (entorno.sePresiono ('y')) 
-				{// si apreta y cierro ventana y vuelvo a iniciar
-					this.isRayoAvailable = true;
-					this.conejo.setX(entorno.getWidth()/2);
-					this.conejo.setY(entorno.getHeight()-100);
-					this.contadorKame= 0;
-					this.Calles1 = new Calle[2];
-					this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-150,this.entorno.getWidth(),250);
-					this.Calles1[1] = new Calle(this.entorno.getWidth()/2,-135,this.entorno.getWidth(),250);
-					this.autosCalle = new Auto[3];
-					for (int i = 0; i < this.autosCalle.length; i++) {
-						this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+100,59,20);
-					}	
-					this.autosCalle2 = new Auto[4];
-					for (int i = 0; i < this.autosCalle2.length; i++) {
-						this.autosCalle2[i] = new Auto(i*180,this.autosCalle[0].getY()-55,50,22);
-						
-					}	
-					this.autosCalle3 = new Auto[3];
-					for (int i = 0; i < this.autosCalle3.length; i++) {
-						this.autosCalle3[i] = new Auto(i*250,this.autosCalle2[0].getY()-55,50,22);
-					}
-					
-					this.autosCalle4 = new Auto[5];
-					for (int i = 0; i < this.autosCalle4.length; i++) {
-						this.autosCalle4[i] = new Auto(i*180,this.autosCalle3[0].getY()-55,50,22);
-					}
-					this.autosCalle5 = new Auto[4];
-					for (int i = 0; i < this.autosCalle5.length; i++) {
-						this.autosCalle5[i] = new Auto(i*180,this.autosCalle4[0].getY()-55,50,22);
-					}
-					this.isGameOver = false;
-					this.isStartScreenActive= true;
-				}
-				if (entorno.sePresiono('n')) {
-					// termino el juego
-					System.exit(0);
-				}	
-		}
+//	if (this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
+//			|| colisionConejo(this.autosCalle, this.conejo)|| colisionConejo(this.autosCalle2, this.conejo) || colisionConejo(this.autosCalle3, this.conejo)
+//			|| colisionConejo(this.autosCalle4, this.conejo) || colisionConejo(this.autosCalle5,this.conejo)){		
+//				
+//				this.isGameOver = true;
+//				this.conejo.setY(2000);
+//				Image imagenFin = Herramientas.cargarImagen("imagenes/fin.jpg");
+//				entorno.dibujarImagen(imagenFin, 400,300, 0);
+//				entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getWidth()-500, entorno.getHeight()-100);
+//				
+//				if (entorno.sePresiono ('y')) 
+//				{// si apreta y cierro ventana y vuelvo a iniciar
+//					this.isRayoAvailable = true;
+//					this.conejo.setX(entorno.getWidth()/2);
+//					this.conejo.setY(entorno.getHeight()-100);
+//					this.contadorKame= 0;
+//					this.Calles1 = new Calle[2];
+//					this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-150,this.entorno.getWidth(),250);
+//					this.Calles1[1] = new Calle(this.entorno.getWidth()/2,-135,this.entorno.getWidth(),250);
+//					this.autosCalle = new Auto[3];
+//					for (int i = 0; i < this.autosCalle.length; i++) {
+//						this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+100,59,20);
+//					}	
+//					this.autosCalle2 = new Auto[4];
+//					for (int i = 0; i < this.autosCalle2.length; i++) {
+//						this.autosCalle2[i] = new Auto(i*180,this.autosCalle[0].getY()-55,50,22);
+//						
+//					}	
+//					this.autosCalle3 = new Auto[3];
+//					for (int i = 0; i < this.autosCalle3.length; i++) {
+//						this.autosCalle3[i] = new Auto(i*250,this.autosCalle2[0].getY()-55,50,22);
+//					}
+//					
+//					this.autosCalle4 = new Auto[5];
+//					for (int i = 0; i < this.autosCalle4.length; i++) {
+//						this.autosCalle4[i] = new Auto(i*180,this.autosCalle3[0].getY()-55,50,22);
+//					}
+//					this.autosCalle5 = new Auto[4];
+//					for (int i = 0; i < this.autosCalle5.length; i++) {
+//						this.autosCalle5[i] = new Auto(i*180,this.autosCalle4[0].getY()-55,50,22);
+//					}
+//					this.isGameOver = false;
+//					this.isStartScreenActive= true;
+//				}
+//				if (entorno.sePresiono('n')) {
+//					// termino el juego
+//					System.exit(0);
+//				}	
+		//}
 
 		//flaginicio			
 	if (this.isStartScreenActive && !this.isGameOver) 
