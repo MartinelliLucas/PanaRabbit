@@ -21,15 +21,18 @@ public class Juego extends InterfaceJuego
 	private Auto[] autosCalle4;
 	private Auto[] autosCalle5;
 	private Kamehameha [] kames;
-	
+	private Rayo rayo;
+	private long timerRayo;
+	private Zanahoria zanahoria ;
 	int contadorKame; //entero qe controla los lanzamientos del kame
 	private int salto;
 	private int puntaje;
 
 	// Variables y métodos propios de cada grupo
 	// banderas necesarias para evitar que el tick renderize objetos no deseados
-	private boolean isStartScreenActive=true;	//indica si se debe mostrar la pantalla inicial o no
-	private boolean isGameOver = false;  
+	private boolean isStartScreenActive = true;	//indica si se debe mostrar la pantalla inicial o no
+	private boolean isGameOver = false;
+	private boolean isRayoAvailable = true;
 	// indica si se debe mostrar la pantalla final o no
 	//metodo para respawnear autos:
 	void carRespawn(Auto[] arrAuto) {
@@ -133,11 +136,12 @@ public class Juego extends InterfaceJuego
 		this.Calles1 = new Calle[2];
 		this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-150,this.entorno.getWidth(),250);
 		this.Calles1[1] = new Calle(this.entorno.getWidth()/2,-135,this.entorno.getWidth(),250);
-
-
+		this.rayo = null;
+		this.timerRayo = 0;
+		this.zanahoria = null;
 		this.autosCalle = new Auto[3];
 		for (int i = 0; i < this.autosCalle.length; i++) {
-			this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+100,59,20);
+			this.autosCalle[i] = new Auto(i*250,this.Calles1[0].getY()+100,50,20);
 		}	
 		this.autosCalle2 = new Auto[4];
 		for (int i = 0; i < this.autosCalle2.length; i++) {
@@ -260,6 +264,34 @@ public void tick()	// Procesamiento de un instante de tiempo
 					}
 				}		
 			}	
+		// creacion e interacciones del rayo
+			if (entorno.sePresiono(entorno.TECLA_SHIFT) && this.isRayoAvailable) {
+				this.rayo = conejo.rayo();
+				this.timerRayo = System.currentTimeMillis();
+				this.isRayoAvailable = false;
+			}
+			if (this.rayo != null && !this.isRayoAvailable) {
+				this.rayo.renderRayo(this.entorno);
+				this.rayo.desplazamiento();
+				if (this.rayo.getY() < 0) {
+					this.rayo = null;
+
+				}
+				if (System.currentTimeMillis() - this.timerRayo >= 20000) {
+					this.isRayoAvailable = true;
+				}
+			}
+			
+			//creacion e interacciones de la zanahoria
+			if (this.zanahoria == null)
+				this.zanahoria = new Zanahoria(entorno.getWidth()/2,entorno.getHeight()/2,50,20);
+			if (zanahoria != null) {
+				this.zanahoria.renderZanahoria(this.entorno);
+				this.zanahoria.fall();
+				if (this.zanahoria.getY() > entorno.getHeight() -50 || conejo.comer(this.zanahoria)) {
+					this.zanahoria = null;
+				}
+			}
 	}	
 		
 		//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
@@ -275,6 +307,7 @@ public void tick()	// Procesamiento de un instante de tiempo
 				
 				if (entorno.sePresiono ('y')) 
 				{// si apreta y cierro ventana y vuelvo a iniciar
+					this.isRayoAvailable = true;
 					this.conejo.setX(entorno.getWidth()/2);
 					this.conejo.setY(entorno.getHeight()-100);
 					this.contadorKame= 0;

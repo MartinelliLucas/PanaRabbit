@@ -68,5 +68,14 @@ public class Conejo {
 		Kamehameha kame = new Kamehameha(this.x, this.y, 40, 70);
 		return kame ;		
 	}
-	
+	public Rayo rayo() {
+		Rayo rayo = new Rayo (this.x, this.y, 20 ,100);
+		return rayo;
+	}
+	public boolean comer (Zanahoria zanahoria) {
+		return (this.getY() + this.getHeight()/2 > zanahoria.getY() - zanahoria.getAlto() &&
+				this.getY() - this.getHeight()/2 < zanahoria.getY() + zanahoria.getAlto() &&
+				this.getX() + this.getWidth() /2 > zanahoria.getX() - zanahoria.getAncho() &&
+				this.getX() - this.getWidth() /2 < zanahoria.getX() + zanahoria.getAncho());
+	}
 }
