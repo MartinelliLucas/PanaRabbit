@@ -22,7 +22,7 @@ public class Juego extends InterfaceJuego
 	private Auto[] autosCalle5;
 	private Kamehameha [] kames;
 	
-	int contadorKame;
+	int contadorKame; //entero qe controla los lanzamientos del kame
 	private int salto;
 	private int puntaje;
 
@@ -257,7 +257,6 @@ public void tick()	// Procesamiento de un instante de tiempo
 					if (this.kames[i].getY() < 0) {
 						this.kames[i] = null;
 						contadorKame -= 1;
-						System.out.println(contadorKame);
 					}
 				}		
 			}	
