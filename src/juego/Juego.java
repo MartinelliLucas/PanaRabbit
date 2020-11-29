@@ -21,7 +21,7 @@ public class Juego extends InterfaceJuego {
 	private int contadorKame; // entero qe controla los lanzamientos del kame
 	private int salto;
 	private int puntaje;
-
+		
 	// Variables y métodos propios de cada grupo
 
 	// banderas necesarias para evitar que el tick renderize objetos no deseados
@@ -47,17 +47,16 @@ public class Juego extends InterfaceJuego {
 		for (int k = 0; k < kames.length; k++) {
 			Kamehameha kame = kames[k];
 			if (kame != null) {
-				for (int i = 0; i < calle.getCantCarriles(); i++) {
-					for (int j = 0; j < calle.getCarril(i).getCantAutos(); j++) {
-						Auto autoActual = calle.getCarril(i).getAuto(j);
+				for (int c = 0; c < calle.getCantCarriles(); c++) {
+					for (int a = 0; a < calle.getCarril(c).getCantAutos(); a++) {
+						Auto autoActual = calle.getCarril(c).getAuto(a);
 						if (autoActual != null) {
 							if (autoActual.getX() - (autoActual.getWidth() / 2) < kame.getX()
 									&& kame.getX() < (autoActual.getX() + (autoActual.getWidth() / 2))
-									&& autoActual.getY() + (autoActual.getHeight() / 2) > kame.getY()
-											- (kame.getAlto() / 2)
+									&& autoActual.getY() + (autoActual.getHeight() / 2) > kame.getY() - (kame.getAlto() / 2)
 									&& kame.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
 
-								calle.getCarril(i).removerAuto(j);
+								calle.getCarril(c).removerAuto(a);
 								kames[k] = null;
 								puntaje += 5;
 								contadorKame -= 1;

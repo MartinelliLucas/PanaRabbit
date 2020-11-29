@@ -8,8 +8,8 @@ public class Auto {
 
 	private double x;
 	private double y;
-	private int width;
-	private int height;
+	public static int width = 50;
+	public static int height = 22;
 	private double speed;
 
 	private static Image imgautoizq= Herramientas.cargarImagen("juego/autito5.png");
@@ -17,17 +17,12 @@ public class Auto {
 
 
 	
-	public Auto(double x, double y, int width, int height) {
+	public Auto(double x, double y, double speed) {
 		this.x = x;
 		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.speed = 2;
+		this.speed = speed;
 	}
 	
-	void setSpeed(double Speed) {
-		this.speed = Speed;
-	}
 	void moveForward() {
 		this.x = x + this.speed;
 	}
@@ -55,11 +50,11 @@ public class Auto {
 		return this.y;
 	}
 	double getWidth() {
-		return this.width;
+		return width;
 	}
 	
 	double getHeight() {
-		return this.height;
+		return height;
 	}
 	
 	void setX(double value){

@@ -5,25 +5,28 @@ import java.awt.Color;
 import entorno.Entorno;
 
 public class Carril {
+	
 	private int width;
 	private int height;
 	private double x;
 	private double y;
 	private Auto[] arrAuto;
 	private boolean dirDerecha; // true para la derecha, false para la izquierda.
-	private static int anchoAuto = 50;
-	private static int altoAuto = 22;
-
-	public Carril(double y, int cantAutos, boolean direccion) {
+	private double speed;
+	
+	
+	public Carril(double y, int cantAutos, boolean direccion, double speed) {
 		this.width = 800;
 		this.height = 60;
 		this.x = 400;
 		this.y = y;
 		this.arrAuto = new Auto[cantAutos];
 		this.dirDerecha = direccion;
+		this.speed = speed;
 		for (int i = 0; i < cantAutos; i++) {
-			this.arrAuto[i] = new Auto(i * 180, this.y, anchoAuto, altoAuto);
+			this.arrAuto[i] = new Auto(i * 180, this.y,this.speed);
 		}
+		
 	}
 
 	void fall() {
@@ -95,7 +98,7 @@ public class Carril {
 				}
 			}
 			if (sePuedeCrear) {
-				this.arrAuto[indice] = new Auto(0 - anchoAuto / 2, this.y, anchoAuto, altoAuto);
+				this.arrAuto[indice] = new Auto(0 - Auto.width / 2, this.y,this.speed);
 			}
 		} else {
 			for (int a = 0; a < arrAuto.length; a++) {
@@ -104,7 +107,7 @@ public class Carril {
 				}
 			}
 			if (sePuedeCrear) {
-				this.arrAuto[indice] = new Auto(entorno.getWidth() + anchoAuto / 2, this.y, anchoAuto, altoAuto);
+				this.arrAuto[indice] = new Auto(entorno.getWidth() + Auto.width / 2, this.y,this.speed);
 			}
 		}
 	}
