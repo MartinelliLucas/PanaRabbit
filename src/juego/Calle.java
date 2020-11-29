@@ -16,10 +16,11 @@ public class Calle {
 		this.width = width;
 		this.height = height;
 		this.carriles = new Carril[4];
-		this.carriles[0] = new Carril(y+100, 3, true);
-		this.carriles[1] = new Carril(y+45, 4, false);
-		this.carriles[2] = new Carril(y-10, 3, true);
-		this.carriles[3] = new Carril(y-65, 5, false);
+		this.carriles[0] = new Carril(y+100, 3, true, 2);
+		this.carriles[1] = new Carril(y+45, 4, false, 1.5);
+		this.carriles[2] = new Carril(y-10, 3, true, 2.5);
+		this.carriles[3] = new Carril(y-65, 5, false, 3);
+		
 	}
 	
 	public void fall() {
