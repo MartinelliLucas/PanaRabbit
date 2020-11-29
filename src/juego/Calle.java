@@ -24,7 +24,7 @@ public class Calle {
 	}
 	
 	public void fall() {
-		this.y = y+0.4;
+		this.y = y+0.2;
 		for (int i = 0; i < carriles.length; i++) {
 			carriles[i].fall();
 		}

@@ -13,7 +13,7 @@ public class Juego extends InterfaceJuego {
 	private Conejo conejo;
 	private Calle calle1;
 	private Calle calle2;
-	private static Image icono = Herramientas.cargarImagen("juego/conejo.png");
+	private static Image icono = Herramientas.cargarImagen("archivos/conejo.png");
 	private Kamehameha[] kames;
 	private Rayo rayo;
 	private Zanahoria zanahoria;
@@ -136,7 +136,7 @@ public class Juego extends InterfaceJuego {
 
 		// Inicializar lo que haga falta para el juego
 
-		this.conejo = new Conejo(entorno.getWidth() / 2, entorno.getHeight() - 100, 32, 50);
+		this.conejo = new Conejo(entorno.getWidth() / 2, entorno.getHeight() - 100, 32, 45);
 		this.kames = new Kamehameha[3];
 		this.contadorKame = 0;
 		this.calle1 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() / 2 - 250,
@@ -170,7 +170,7 @@ public class Juego extends InterfaceJuego {
 
 		if (!this.isStartScreenActive && !this.isGameOver) {
 
-			Image grass = Herramientas.cargarImagen("imagenes/grass.jpg");
+			Image grass = Herramientas.cargarImagen("archivos/grass.jpg");
 			entorno.dibujarImagen(grass, 400, 300, 0);
 
 			this.calle1.renderCalle(this.entorno);
@@ -209,7 +209,7 @@ public class Juego extends InterfaceJuego {
 				for (int i = 0; i < this.kames.length; i++) {
 					if (this.kames[i] == null) {
 						this.kames[i] = conejo.disparar();
-						Herramientas.play("juego/disparo.wav");
+						Herramientas.play("archivos/disparo.wav");
 						contadorKame += 1;
 						break; // encuentra un kame == null y sale del for
 					}
@@ -236,7 +236,7 @@ public class Juego extends InterfaceJuego {
 				this.isRayoAvailable = true;
 			}
 			if (this.isRayoAvailable) {
-				Image iconoRayo = Herramientas.cargarImagen("imagenes/rayoAvailable.png");
+				Image iconoRayo = Herramientas.cargarImagen("archivos/rayoAvailable.png");
 				entorno.dibujarImagen(iconoRayo, 750, 35, 0);
 			}
 
@@ -292,7 +292,7 @@ public class Juego extends InterfaceJuego {
 				|| colisionAutoConejo(this.calle1, this.conejo) || colisionAutoConejo(this.calle2, this.conejo)) {
 			this.isGameOver = true;
 			this.conejo.setY(2000);
-			Image imagenFin = Herramientas.cargarImagen("imagenes/fin.jpg");
+			Image imagenFin = Herramientas.cargarImagen("archivos/fin.jpg");
 			entorno.dibujarImagen(imagenFin, 400, 300, 0);
 			entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N", entorno.getWidth() - 500,
 					entorno.getHeight() - 100);
@@ -302,6 +302,10 @@ public class Juego extends InterfaceJuego {
 						this.entorno.getWidth(), 220);
 				this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300,
 						this.entorno.getWidth(), 220);
+				this.zanahoria = null;
+				for (int i = 0; i < kames.length; i++) {
+					kames[i]= null;
+				}
 				this.isRayoAvailable = false;
 				this.conejo.setX(entorno.getWidth() / 2);
 				this.conejo.setY(entorno.getHeight() - 100);
@@ -320,13 +324,13 @@ public class Juego extends InterfaceJuego {
 
 		// flaginicio
 		if (this.isStartScreenActive && !this.isGameOver) {
-			Image imagenInicio = Herramientas.cargarImagen("imagenes/inicio.jpg");
+			Image imagenInicio = Herramientas.cargarImagen("archivos/inicio.jpg");
 			entorno.dibujarImagen(imagenInicio, 400, 300, 0);
 		}
 
 		// flaginicio
 		if (this.isStartScreenActive && !this.isGameOver) {
-			Image imagenInicio = Herramientas.cargarImagen("imagenes/inicio.jpg");
+			Image imagenInicio = Herramientas.cargarImagen("archivos/inicio.jpg");
 			entorno.dibujarImagen(imagenInicio, 400, 300, 0);
 		}
 
@@ -335,6 +339,6 @@ public class Juego extends InterfaceJuego {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		Juego juego = new Juego();
-			
+		Herramientas.loop("archivos/musica.wav");	
 	}
 }

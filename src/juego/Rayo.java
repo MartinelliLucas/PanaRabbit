@@ -10,7 +10,7 @@ public class Rayo {
 	private double y;
 	private int ancho;
 	private int alto;
-	private static Image rayo = Herramientas.cargarImagen("imagenes/rayo.png");
+	private static Image rayo = Herramientas.cargarImagen("archivos/rayo.png");
 
 	
 	public Rayo (double x, double y, int ancho, int alto) {

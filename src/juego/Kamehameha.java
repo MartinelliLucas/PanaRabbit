@@ -11,7 +11,7 @@ public class Kamehameha {
 	private double y;
 	private int ancho;
 	private int alto;
-	private static Image kameha= Herramientas.cargarImagen("imagenes/kame.png"); 
+	private static Image kameha= Herramientas.cargarImagen("archivos/kame.png"); 
 
 	
 	public Kamehameha (double x, double y , int ancho, int alto) {		

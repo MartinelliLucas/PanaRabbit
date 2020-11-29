@@ -31,7 +31,7 @@ public class Carril {
 	}
 
 	void fall() {
-		this.y += 0.4;
+		this.y += 0.2;
 		for (int i = 0; i < arrAuto.length; i++) {
 			if (arrAuto[i] != null) {
 				arrAuto[i].fall();

@@ -11,7 +11,7 @@ public class Zanahoria {
 	private double y;
 	private int ancho;
 	private int alto;
-	private static Image zanahoria = Herramientas.cargarImagen("imagenes/zanahoria.png");
+	private static Image zanahoria = Herramientas.cargarImagen("archivos/zanahoria.png");
 	
 	public Zanahoria (double x, double y, int ancho, int alto) {
 		this.x = x;

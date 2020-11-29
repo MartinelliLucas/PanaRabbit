@@ -12,8 +12,8 @@ public class Auto {
 	public static int height = 22;
 	private double speed;
 
-	private static Image imgautoizq= Herramientas.cargarImagen("juego/autito5.png");
-	private static Image imgautoder= Herramientas.cargarImagen("imagenes/autoder.png");
+	private static Image imgautoizq= Herramientas.cargarImagen("archivos/autito5.png");
+	private static Image imgautoder= Herramientas.cargarImagen("archivos/autoder.png");
 
 
 	
@@ -32,7 +32,7 @@ public class Auto {
 	}
 	
 	void fall() {
-		this.y = y+0.4;
+		this.y = y+0.2;
 	}
 	
 	void renderCar(Entorno entorno) {

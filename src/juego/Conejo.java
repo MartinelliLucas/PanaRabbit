@@ -12,7 +12,7 @@ public class Conejo {
 	private double y;
 	private int width;
 	private int height;
-	private static Image imgConejo= Herramientas.cargarImagen("juego/rogerchico.png");
+	private static Image imgConejo= Herramientas.cargarImagen("archivos/rogerchico.png");
 	
 	public Conejo(int x, int y, int ancho, int alto) {
 		this.x = x;
@@ -22,18 +22,18 @@ public class Conejo {
 	}
 	
 	void fall() {
-		this.y = y+0.4;
+		this.y = y+0.2;
 	}
 	
 	void moveForward() {
 		this.y = y - 25;
 	}
 	void moveLeft() {
-		this.x = x - this.width/2;
+		this.x = x - this.width+2;
 	}
 	
 	void moveRight() {
-		this.x = x + this.width/2;
+		this.x = x + this.width-2;
 	}
 	
 	void renderRabbit(Entorno entorno) {
@@ -67,7 +67,7 @@ public class Conejo {
 		return kame ;		
 	}
 	public Rayo rayo() {
-		Rayo rayo = new Rayo (this.x, this.y, 20 ,100);
+		Rayo rayo = new Rayo (this.x, this.y, 20 ,70);
 		return rayo;
 	}
 	public boolean comer (Zanahoria zanahoria) {
