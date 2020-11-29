@@ -26,14 +26,14 @@ public class Conejo {
 	}
 	
 	void moveForward() {
-		this.y = y - 30;
+		this.y = y - 25;
 	}
 	void moveLeft() {
-		this.x = x - this.width;
+		this.x = x - this.width/2;
 	}
 	
 	void moveRight() {
-		this.x = x + this.width;
+		this.x = x + this.width/2;
 	}
 	
 	void renderRabbit(Entorno entorno) {

@@ -16,18 +16,18 @@ public class Juego extends InterfaceJuego {
 	private static Image icono = Herramientas.cargarImagen("juego/conejo.png");
 	private Kamehameha[] kames;
 	private Rayo rayo;
-	private long timerRayo;
 	private Zanahoria zanahoria;
 	private int contadorKame; // entero qe controla los lanzamientos del kame
+	private int contadorRayo;
 	private int salto;
 	private int puntaje;
-		
+
 	// Variables y métodos propios de cada grupo
 
 	// banderas necesarias para evitar que el tick renderize objetos no deseados
 	private boolean isStartScreenActive = true; // indica si se debe mostrar la pantalla inicial o no
 	private boolean isGameOver = false; // indica si se debe mostrar la pantalla final o no
-	private boolean isRayoAvailable = true;
+	private boolean isRayoAvailable = false;
 
 	// metodo para respawnear autos:
 	void respawnCars(Calle calle) {
@@ -53,7 +53,8 @@ public class Juego extends InterfaceJuego {
 						if (autoActual != null) {
 							if (autoActual.getX() - (autoActual.getWidth() / 2) < kame.getX()
 									&& kame.getX() < (autoActual.getX() + (autoActual.getWidth() / 2))
-									&& autoActual.getY() + (autoActual.getHeight() / 2) > kame.getY() - (kame.getAlto() / 2)
+									&& autoActual.getY() + (autoActual.getHeight() / 2) > kame.getY()
+											- (kame.getAlto() / 2)
 									&& kame.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
 
 								calle.getCarril(c).removerAuto(a);
@@ -86,8 +87,48 @@ public class Juego extends InterfaceJuego {
 		return false;
 	}
 
+//	void colisionAutoRayo(Calle calle, Rayo rayo) {
+//		if (rayo != null) {
+//			for (int c = 0; c < calle.getCantCarriles(); c++) {
+//				for (int a = 0; a < calle.getCarril(c).getCantAutos(); a++) {
+//					Auto autoActual = calle.getCarril(c).getAuto(a);
+//					if (autoActual != null) {
+//						if (autoActual.getX() - (autoActual.getWidth() / 2) < rayo.getX()
+//								&& rayo.getX() < (autoActual.getX() + (autoActual.getWidth() / 2))
+//								&& autoActual.getY() + (autoActual.getHeight() / 2) > rayo.getY() - (rayo.getAlto() / 2)
+//								&& rayo.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
+//								this.zanahoria = new Zanahoria(autoActual.getX(), autoActual.getX(), 50, 20);	
+//								calle.getCarril(c).removerAuto(a);
+//								rayo = null;
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 
-{
+	boolean colisionAutoRayo(Calle calle, Rayo rayo) {
+		if (rayo != null) {
+			for (int c = 0; c < calle.getCantCarriles(); c++) {
+				for (int a = 0; a < calle.getCarril(c).getCantAutos(); a++) {
+					Auto autoActual = calle.getCarril(c).getAuto(a);
+					if (autoActual != null) {
+						if (rayo.getY() + rayo.getAlto() / 2 > autoActual.getY() - autoActual.getHeight() / 2
+								&& rayo.getY() - rayo.getAlto() / 2 < autoActual.getY() + autoActual.getHeight() / 2
+								&& rayo.getX() + rayo.getAncho() / 2 > autoActual.getX() - autoActual.getWidth() / 2
+								&& rayo.getX() - rayo.getAncho() / 2 < autoActual.getX() + autoActual.getWidth() / 2) {
+							this.zanahoria = new Zanahoria(autoActual.getX(), autoActual.getY(), 50, 20);
+							calle.getCarril(c).removerAuto(a);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	{
 
 		// Inicializa el objeto entorno
 
@@ -103,10 +144,10 @@ public class Juego extends InterfaceJuego {
 		this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300, this.entorno.getWidth(),
 				220);
 		this.rayo = null;
-		this.timerRayo = 0;
 		this.zanahoria = null;
 		this.salto = 0;
 		this.puntaje = 0;
+		this.contadorRayo =0 ;
 
 		// Inicia el juego!
 		this.entorno.iniciar();
@@ -127,14 +168,10 @@ public class Juego extends InterfaceJuego {
 			this.isStartScreenActive = false;
 		}
 
-
-		if (!this.isStartScreenActive && !this.isGameOver) 
-		{	
-
+		if (!this.isStartScreenActive && !this.isGameOver) {
 
 			Image grass = Herramientas.cargarImagen("imagenes/grass.jpg");
 			entorno.dibujarImagen(grass, 400, 300, 0);
-
 
 			this.calle1.renderCalle(this.entorno);
 			this.calle1.fall();
@@ -160,6 +197,7 @@ public class Juego extends InterfaceJuego {
 			if (entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight()) {
 				conejo.moveForward();
 				salto++;
+				contadorRayo ++ ;
 			}
 			if (entorno.sePresiono(entorno.TECLA_DERECHA)
 					&& conejo.getX() < entorno.getWidth() - this.conejo.getWidth() - 5)
@@ -188,13 +226,15 @@ public class Juego extends InterfaceJuego {
 						contadorKame -= 1;
 					}
 
-				}		
-			}	
+				}
+			}
 
 			// creacion e interacciones del rayo
-			entorno.cambiarFont("console", 18, Color.white);
-			entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
 
+
+			if (this.contadorRayo == 10) {
+				this.isRayoAvailable = true;
+			}
 			if (this.isRayoAvailable) {
 				Image iconoRayo = Herramientas.cargarImagen("imagenes/rayoAvailable.png");
 				entorno.dibujarImagen(iconoRayo, 750, 35, 0);
@@ -202,28 +242,23 @@ public class Juego extends InterfaceJuego {
 
 			if (entorno.sePresiono(entorno.TECLA_SHIFT) && this.isRayoAvailable) {
 				this.rayo = conejo.rayo();
-				this.timerRayo = System.currentTimeMillis();
+				this.contadorRayo = 0;
 				this.isRayoAvailable = false;
 			}
 			if (this.rayo != null && !this.isRayoAvailable) {
 				this.rayo.renderRayo(this.entorno);
 				this.rayo.desplazamiento();
-				if (this.rayo.getY() < 0) {
+				if (this.rayo.getY() < 0 || colisionAutoRayo(this.calle1, this.rayo)
+						|| colisionAutoRayo(this.calle2, this.rayo)) {
 					this.rayo = null;
-
-				}
-				if (System.currentTimeMillis() - this.timerRayo >= 20000) {
-					this.isRayoAvailable = true;
 				}
 			}
 
 			// creacion e interacciones de la zanahoria
-			if (this.zanahoria == null)
-				this.zanahoria = new Zanahoria(entorno.getWidth() / 2, entorno.getHeight() / 2, 50, 20);
-			if (zanahoria != null) {
+			if(this.zanahoria != null) {
 				this.zanahoria.renderZanahoria(this.entorno);
 				this.zanahoria.fall();
-				if (this.zanahoria.getY() > entorno.getHeight() -50 ) {
+				if (this.zanahoria.getY() > entorno.getHeight() - 50) {
 					this.zanahoria = null;
 				}
 				if (conejo.comer(this.zanahoria)) {
@@ -231,48 +266,64 @@ public class Juego extends InterfaceJuego {
 					this.zanahoria = null;
 				}
 			}
-		}
+			if(this.zanahoria != null) {
+				this.zanahoria.renderZanahoria(this.entorno);
+				this.zanahoria.fall();
+				if (this.zanahoria.getY() > entorno.getHeight() - 50) {
+					this.zanahoria = null;
+				}
+				if (conejo.comer(this.zanahoria)) {
+					puntaje += 25;
+					this.zanahoria = null;
+				}
+			}
 
+		}
 
 		entorno.cambiarFont("arial", 18, Color.white);
-		entorno.escribirTexto("Saltos: " + salto, 50,15);
-		entorno.escribirTexto("Puntaje: "+ puntaje, 50, 30);
+		entorno.escribirTexto("Saltos: " + salto, 50, 15);
+		entorno.escribirTexto("Puntaje: " + puntaje, 50, 30);
 		entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
+		entorno.cambiarFont("console", 18, Color.white);
+		entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
+		// codigo para terminar el juego si el conejo sale por el limite inferior o
+		// choca:
+		if (this.conejo.getY() + conejo.getHeight() / 2 > entorno.getHeight()
+				|| colisionAutoConejo(this.calle1, this.conejo) || colisionAutoConejo(this.calle2, this.conejo)) {
+			this.isGameOver = true;
+			this.conejo.setY(2000);
+			Image imagenFin = Herramientas.cargarImagen("imagenes/fin.jpg");
+			entorno.dibujarImagen(imagenFin, 400, 300, 0);
+			entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N", entorno.getWidth() - 500,
+					entorno.getHeight() - 100);
 
-			
-		//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
-		if 	(this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 	||
-			colisionAutoConejo (this.calle1, this.conejo) || colisionAutoConejo (this.calle2, this.conejo)){						
-				this.isGameOver = true;
-				this.conejo.setY(2000);
-				Image imagenFin = Herramientas.cargarImagen("imagenes/fin.jpg");
-				entorno.dibujarImagen(imagenFin, 400,300, 0);
-				entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N",entorno.getWidth()-500, entorno.getHeight()-100);
-				
-				if (entorno.sePresiono ('y')) 
-				{// si apreta y cierro ventana y vuelvo a iniciar
-					this.calle1 = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-250,this.entorno.getWidth(),220);
-					this.calle2 = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()-300,this.entorno.getWidth(),220);
-					this.isRayoAvailable = true;
-					this.conejo.setX(entorno.getWidth()/2);
-					this.conejo.setY(entorno.getHeight()-100);
-					this.contadorKame= 0;
-					this.isGameOver = false;
-					this.isStartScreenActive= true;
-				}
-				if (entorno.sePresiono('n')) {
-					// termino el juego
-					System.exit(0);
-				}	
+			if (entorno.sePresiono('y')) {// si apreta y cierro ventana y vuelvo a iniciar
+				this.calle1 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() / 2 - 250,
+						this.entorno.getWidth(), 220);
+				this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300,
+						this.entorno.getWidth(), 220);
+				this.isRayoAvailable = false;
+				this.conejo.setX(entorno.getWidth() / 2);
+				this.conejo.setY(entorno.getHeight() - 100);
+				this.contadorKame = 0;
+				this.contadorRayo = 0;
+				this.puntaje = 0;
+				this.salto =0;
+				this.isGameOver = false;
+				this.isStartScreenActive = true;
+			}
+			if (entorno.sePresiono('n')) {
+				// termino el juego
+				System.exit(0);
+			}
 		}
 
-		//flaginicio			
-	if (this.isStartScreenActive && !this.isGameOver) 
-	{		
-		Image imagenInicio = Herramientas.cargarImagen("imagenes/inicio.jpg");
-		entorno.dibujarImagen(imagenInicio, 400, 300, 0);		
-	}		
-		
+		// flaginicio
+		if (this.isStartScreenActive && !this.isGameOver) {
+			Image imagenInicio = Herramientas.cargarImagen("imagenes/inicio.jpg");
+			entorno.dibujarImagen(imagenInicio, 400, 300, 0);
+		}
+
 		// flaginicio
 		if (this.isStartScreenActive && !this.isGameOver) {
 			Image imagenInicio = Herramientas.cargarImagen("imagenes/inicio.jpg");
@@ -284,6 +335,6 @@ public class Juego extends InterfaceJuego {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		Juego juego = new Juego();
-		Herramientas.loop("juego/music.wav");
+			
 	}
 }
