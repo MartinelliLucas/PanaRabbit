@@ -1,80 +1,62 @@
 package juego;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-
-
 import java.awt.Color;
 import entorno.Entorno;
 import java.awt.Image;
 import entorno.Herramientas;
 import entorno.InterfaceJuego;
 
-public class Juego extends InterfaceJuego
-{
+public class Juego extends InterfaceJuego {
 	// El objeto Entorno que controla el tiempo y otros
-	
+
 	private Entorno entorno;
 	private Conejo conejo;
 	private Calle calle1;
 	private Calle calle2;
 	private static Image icono = Herramientas.cargarImagen("juego/conejo.png");
-	private Timer carTimer;
-	private TimerTask respawn;
-	private Kamehameha [] kames;
+	private Kamehameha[] kames;
 	private Rayo rayo;
 	private long timerRayo;
-	private Zanahoria zanahoria ;
-	private int contadorKame; //entero qe controla los lanzamientos del kame
+	private Zanahoria zanahoria;
+	private int contadorKame; // entero qe controla los lanzamientos del kame
 	private int salto;
 	private int puntaje;
-	
 
 	// Variables y métodos propios de cada grupo
-	
+
 	// banderas necesarias para evitar que el tick renderize objetos no deseados
-	private boolean isStartScreenActive = true;	//indica si se debe mostrar la pantalla inicial o no
+	private boolean isStartScreenActive = true; // indica si se debe mostrar la pantalla inicial o no
 	private boolean isGameOver = false; // indica si se debe mostrar la pantalla final o no
 	private boolean isRayoAvailable = true;
-	
-	//metodo para respawnear autos:
-	void carRespawn(Auto[] arrAuto) {
-		carTimer = new Timer();
-		respawn = new TimerTask() {
-			@Override
-			public void run() {
-				for (int i = 0; i < arrAuto.length; i++) {
-					if( i == 0 && arrAuto[i] == null) {
-						if (arrAuto[i+1] == null) {
-							arrAuto[i] = new Auto(arrAuto[arrAuto.length-1].getX()- 200,arrAuto[arrAuto.length-1].getY(),100,60);
-						}
-						arrAuto[i] = new Auto(arrAuto[i+1].getX()- 200,arrAuto[i+1].getY(),100,60);
-					}
-					if (arrAuto[i] == null) {
-						arrAuto[i] = new Auto(arrAuto[i-1].getX()+arrAuto[i-1].getWidth()+50,arrAuto[i-1].getY(),100,60);
-					}
+
+	// metodo para respawnear autos:
+	void respawnCars(Calle calle) {
+		for (int c = 0; c < calle.getCantCarriles(); c++) {
+			for (int a = 0; a < calle.getCarril(c).getCantAutos(); a++) {
+				Auto autoActual = calle.getCarril(c).getAuto(a);
+				if (autoActual == null) {
+					calle.getCarril(c).agregarAuto(a, this.entorno);
 				}
 			}
-		};
-		carTimer.schedule(respawn, 5000);
+		}
 	}
-	
-	//metodo para identificar auto colisionado con el kame y eliminar ambos objetos, ademas de sumar puntaje. 	
-	
-	void colisionAutoKame (Calle calle, Kamehameha[] kames) {
+
+	// metodo para identificar auto colisionado con el kame y eliminar ambos
+	// objetos, ademas de sumar puntaje.
+	void colisionAutoKame(Calle calle, Kamehameha[] kames) {
 		for (int k = 0; k < kames.length; k++) {
 			Kamehameha kame = kames[k];
-			if(kame != null) {
+			if (kame != null) {
 				for (int i = 0; i < calle.getCantCarriles(); i++) {
 					for (int j = 0; j < calle.getCarril(i).getCantAutos(); j++) {
 						Auto autoActual = calle.getCarril(i).getAuto(j);
 						if (autoActual != null) {
-							if (autoActual.getX() - (autoActual.getWidth()/2) < kame.getX() &&
-								kame.getX() < (autoActual.getX() + (autoActual.getWidth()/2)) &&
-								autoActual.getY() + (autoActual.getHeight()/2) > kame.getY() - (kame.getAlto()/2) &&
-								kame.getY() > (autoActual.getY() - autoActual.getHeight()/2)){
-							
+							if (autoActual.getX() - (autoActual.getWidth() / 2) < kame.getX()
+									&& kame.getX() < (autoActual.getX() + (autoActual.getWidth() / 2))
+									&& autoActual.getY() + (autoActual.getHeight() / 2) > kame.getY()
+											- (kame.getAlto() / 2)
+									&& kame.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
+
 								calle.getCarril(i).removerAuto(j);
 								kames[k] = null;
 								puntaje += 5;
@@ -86,157 +68,110 @@ public class Juego extends InterfaceJuego
 			}
 		}
 	}
+
 	// metodo de colision auto con conejo
-	boolean colisionConejo (Auto[] arrAuto, Conejo conejo) {
-		for (int i = 0; i < arrAuto.length; i++) {
-			if (arrAuto[i] == null) {
-				continue;
-			}
-			if (conejo.getY() + conejo.getHeight()/2 > arrAuto[i].getY() - arrAuto[i].getHeight()/2 && 
-				conejo.getY() - conejo.getHeight()/2 < arrAuto[i].getY() + arrAuto[i].getHeight()/2 &&
-				conejo.getX() + conejo.getWidth()/2> arrAuto[i].getX() - arrAuto[i].getWidth()/2 &&
-				conejo.getX() - conejo.getWidth()/2< arrAuto[i].getX() + arrAuto[i].getWidth()/2){
-				return true;
+	boolean colisionAutoConejo(Calle calle, Conejo conejo) {
+		for (int c = 0; c < calle.getCantCarriles(); c++) {
+			for (int a = 0; a < calle.getCarril(c).getCantAutos(); a++) {
+				Auto autoActual = calle.getCarril(c).getAuto(a);
+				if (autoActual != null) {
+					if (conejo.getY() + conejo.getHeight() / 2 > autoActual.getY() - autoActual.getHeight() / 2
+							&& conejo.getY() - conejo.getHeight() / 2 < autoActual.getY() + autoActual.getHeight() / 2
+							&& conejo.getX() + conejo.getWidth() / 2 > autoActual.getX() - autoActual.getWidth() / 2
+							&& conejo.getX() - conejo.getWidth() / 2 < autoActual.getX() + autoActual.getWidth() / 2) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;
 	}
 
-	void crearAutosDer(Auto[] arrAuto) {
-		for (int i = 0; i < arrAuto.length; i++) {
-			if (arrAuto[i] == null)
-				continue;
-			arrAuto[i].renderCarDer(this.entorno);
-			arrAuto[i].moveForward();
-			arrAuto[i].fall();
-						
-			if (arrAuto[i].getX() > entorno.getWidth()) {
-				arrAuto[i].setX(0);
-			}
-			if (arrAuto[i].getY() > entorno.getHeight()-50) {
-				arrAuto[i].setY(0);
-			}
-		}
-	}
-	void crearAutosIzq(Auto[] arrAuto) {
-		for (int i = 0; i < arrAuto.length; i++) {
-			if (arrAuto[i] == null)
-				continue;
-			arrAuto[i].renderCar(this.entorno);
-			arrAuto[i].moveBackwards();
-			arrAuto[i].fall();
-						
-			if (arrAuto[i].getX() < 0) {
-				arrAuto[i].setX(entorno.getWidth());
-			}
-			if (arrAuto[i].getY() > entorno.getHeight()-50) {
-				arrAuto[i].setY(0);
-			}
-		}
-	}
-	
-{
+	{
 		// Inicializa el objeto entorno
 
 		this.entorno = new Entorno(this, "Boss Rabbit Rabber - Grupo 10 - Juanma, Lucas, Nahuel- v1", 800, 600);
-				
+
 		// Inicializar lo que haga falta para el juego
-		
-		this.conejo = new Conejo(entorno.getWidth()/2, entorno.getHeight()-100, 32,50);	
-		this.kames = new Kamehameha [3];
+
+		this.conejo = new Conejo(entorno.getWidth() / 2, entorno.getHeight() - 100, 32, 50);
+		this.kames = new Kamehameha[3];
 		this.contadorKame = 0;
-		this.calle1 = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-250,this.entorno.getWidth(),220);
-		this.calle2 = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()-300,this.entorno.getWidth(),220);
+		this.calle1 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() / 2 - 250,
+				this.entorno.getWidth(), 220);
+		this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300, this.entorno.getWidth(),
+				220);
 		this.rayo = null;
 		this.timerRayo = 0;
 		this.zanahoria = null;
-		this.salto=0;
-		this.puntaje=0;
-		
-		
-		
+		this.salto = 0;
+		this.puntaje = 0;
+
 		// Inicia el juego!
-		this.entorno.iniciar();	
+		this.entorno.iniciar();
 		this.entorno.setIconImage(icono);
 	}
-	
 
 	/**
-	 * Durante el juego, el método tick() será ejecutado en cada instante y 
-	 * por lo tanto es el método más importante de esta clase. Aquí se debe 
-	 * actualizar el estado interno del juego para simular el paso del tiempo 
-	 * (ver el enunciado del TP para mayor detalle).
+	 * Durante el juego, el método tick() será ejecutado en cada instante y por lo
+	 * tanto es el método más importante de esta clase. Aquí se debe actualizar el
+	 * estado interno del juego para simular el paso del tiempo (ver el enunciado
+	 * del TP para mayor detalle).
 	 */
-	
-public void tick()	// Procesamiento de un instante de tiempo
-{		
 
-		if (entorno.sePresiono(entorno.TECLA_ENTER)) 
-		{
-			this.isStartScreenActive=false;
+	public void tick() // Procesamiento de un instante de tiempo
+	{
+
+		if (entorno.sePresiono(entorno.TECLA_ENTER)) {
+			this.isStartScreenActive = false;
 		}
-			
 
-		if (!this.isStartScreenActive && !this.isGameOver) 
-		{	
-			
+		if (!this.isStartScreenActive && !this.isGameOver) {
+
 			Image grass = Herramientas.cargarImagen("imagenes/grass.jpg");
 			entorno.dibujarImagen(grass, 400, 300, 0);
 			entorno.cambiarFont("arial", 16, Color.CYAN);
-			entorno.escribirTexto("saltos: " + salto, 10,15);
-			entorno.escribirTexto("Puntaje: "+ puntaje, 10, 30);                                       
+			entorno.escribirTexto("saltos: " + salto, 10, 15);
+			entorno.escribirTexto("Puntaje: " + puntaje, 10, 30);
 
-			// Creacion y movimiento de las calles:
+			// Creacion y movimiento de las calles, carrilles y autos:
+
 			this.calle1.renderCalle(this.entorno);
 			this.calle1.fall();
-			
-			this.calle2.renderCalle(this.entorno);
-			this.calle2.fall();
-			
-			if (this.calle1.getY() > this.entorno.getHeight()-60) {
+			colisionAutoKame(this.calle1, this.kames);
+			if (this.calle1.getY() > this.entorno.getHeight() - 60) {
 				this.calle1.setY(-10);
 			}
-			
-			if (this.calle2.getY() > this.entorno.getHeight()-60) {
+			respawnCars(this.calle1);
+
+			this.calle2.renderCalle(this.entorno);
+			this.calle2.fall();
+			colisionAutoKame(this.calle2, this.kames);
+			if (this.calle2.getY() > this.entorno.getHeight() - 60) {
 				this.calle2.setY(-10);
 			}
-			
-			colisionAutoKame(this.calle1, this.kames);
-			colisionAutoKame(this.calle2, this.kames);
-			//Creacion, movimiento e interacciones del conejo:
-			
+			respawnCars(this.calle2);
+
+			// Creacion, movimiento e interacciones del conejo:
+
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
-						
-			if(entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight()) {
+
+			if (entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight()) {
 				conejo.moveForward();
 				salto++;
-			}	
-			if(entorno.sePresiono(entorno.TECLA_DERECHA) && conejo.getX() < entorno.getWidth()- this.conejo.getWidth()-5)
+			}
+			if (entorno.sePresiono(entorno.TECLA_DERECHA)
+					&& conejo.getX() < entorno.getWidth() - this.conejo.getWidth() - 5)
 				conejo.moveRight();
-			if(entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX() > 0 + this.conejo.getWidth())
+			if (entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX() > 0 + this.conejo.getWidth())
 				conejo.moveLeft();
 
-//			//Creacion, movimiento e interacciones de los autos:
-//			crearAutosDer(autosCalle);
-//			hayColision(this.autosCalle,this.kames);
-//			
-//			crearAutosIzq(autosCalle2);
-//			hayColision(this.autosCalle2,this.kames);
-//						
-//			crearAutosDer(autosCalle3);
-//			hayColision(this.autosCalle3,this.kames);
-//			
-//			crearAutosIzq(autosCalle4);	
-//			hayColision(this.autosCalle4,this.kames);
-//						
-//			crearAutosDer(autosCalle5);	
-//			hayColision(this.autosCalle5,this.kames);
-				
-			//Creacion, movimiento e interacciones del Kamehameha:
-			
-			// si se presiona espacio entra en el ciclo y busca la primera posicion null y coloca el kame ahi
-			if (entorno.sePresiono(entorno.TECLA_ESPACIO) && contadorKame < 3 ) {
+			// Creacion, movimiento e interacciones del Kamehameha:
+
+			// si se presiona espacio entra en el ciclo y busca la primera posicion null y
+			// coloca el kame ahi
+			if (entorno.sePresiono(entorno.TECLA_ESPACIO) && contadorKame < 3) {
 				for (int i = 0; i < this.kames.length; i++) {
 					if (this.kames[i] == null) {
 						this.kames[i] = conejo.disparar();
@@ -247,18 +182,18 @@ public void tick()	// Procesamiento de un instante de tiempo
 				}
 
 			}
-			//recorre el array de kames y renderiza 1 por 1 
+			// recorre el array de kames y renderiza 1 por 1
 			for (int i = 0; i < this.kames.length; i++) {
 				if (this.kames[i] != null) {
 					this.kames[i].renderKame(this.entorno);
 					this.kames[i].desplazamiento();
-					if (this.kames[i].getY() < 0 ) {
+					if (this.kames[i].getY() < 0) {
 						this.kames[i] = null;
 						contadorKame -= 1;
 					}
-				}		
-			}	
-		// creacion e interacciones del rayo
+				}
+			}
+			// creacion e interacciones del rayo
 			entorno.cambiarFont("console", 18, Color.white);
 			entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
 			if (this.isRayoAvailable) {
@@ -282,20 +217,21 @@ public void tick()	// Procesamiento de un instante de tiempo
 					this.isRayoAvailable = true;
 				}
 			}
-			
-			//creacion e interacciones de la zanahoria
+
+			// creacion e interacciones de la zanahoria
 			if (this.zanahoria == null)
-				this.zanahoria = new Zanahoria(entorno.getWidth()/2,entorno.getHeight()/2,50,20);
+				this.zanahoria = new Zanahoria(entorno.getWidth() / 2, entorno.getHeight() / 2, 50, 20);
 			if (zanahoria != null) {
 				this.zanahoria.renderZanahoria(this.entorno);
 				this.zanahoria.fall();
-				if (this.zanahoria.getY() > entorno.getHeight() -50 || conejo.comer(this.zanahoria)) {
+				if (this.zanahoria.getY() > entorno.getHeight() - 50 || conejo.comer(this.zanahoria)) {
 					this.zanahoria = null;
 				}
 			}
 		}
-			
-		//codigo para terminar el juego si el conejo sale por el limite inferior o choca:
+
+		// codigo para terminar el juego si el conejo sale por el limite inferior o
+		// choca:
 //	if (this.conejo.getY()+conejo.getHeight()/2 > entorno.getHeight() 
 //			|| colisionConejo(this.autosCalle, this.conejo)|| colisionConejo(this.autosCalle2, this.conejo) || colisionConejo(this.autosCalle3, this.conejo)
 //			|| colisionConejo(this.autosCalle4, this.conejo) || colisionConejo(this.autosCalle5,this.conejo)){		
@@ -344,20 +280,18 @@ public void tick()	// Procesamiento de un instante de tiempo
 //					// termino el juego
 //					System.exit(0);
 //				}	
-		//}
+		// }
 
-		//flaginicio			
-	if (this.isStartScreenActive && !this.isGameOver) 
-	{		
-		Image imagenInicio = Herramientas.cargarImagen("imagenes/inicio.jpg");
-		entorno.dibujarImagen(imagenInicio, 400, 300, 0);		
-	}		
-		
-}
+		// flaginicio
+		if (this.isStartScreenActive && !this.isGameOver) {
+			Image imagenInicio = Herramientas.cargarImagen("imagenes/inicio.jpg");
+			entorno.dibujarImagen(imagenInicio, 400, 300, 0);
+		}
 
-@SuppressWarnings("unused")
-public static void main(String[] args)
-	{
+	}
+
+	@SuppressWarnings("unused")
+	public static void main(String[] args) {
 		Juego juego = new Juego();
 		Herramientas.loop("juego/music.wav");
 	}
