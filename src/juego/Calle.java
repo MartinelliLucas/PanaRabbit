@@ -1,7 +1,5 @@
 package juego;
 
-import java.awt.Color;
-
 import entorno.Entorno;
 
 public class Calle {
@@ -32,7 +30,6 @@ public class Calle {
 	}
 	
 	public void renderCalle(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.darkGray);
 		for (int i = 0; i < carriles.length; i++) {
 			carriles[i].renderCarril(entorno);
 		}
@@ -62,6 +59,12 @@ public class Calle {
 		return height;
 	}
 	
+	public Carril getCarril(int index){
+		return this.carriles[index];
+	}
 	
+	public int getCantCarriles() {
+		return carriles.length;
+	}
 	
 }

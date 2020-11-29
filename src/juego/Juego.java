@@ -39,33 +39,40 @@ public class Juego extends InterfaceJuego
 	private boolean isRayoAvailable = true;
 	
 	void hayColision (Auto[] arrAuto, Kamehameha[] arrKames) {
-		double xGuardado;
-		double yGuardado;
-		long timerSpawn;
-		
+				
 		for (int k = 0; k < arrKames.length; k++) {
 			int indiceColision = colisionAuto(arrAuto,arrKames[k]);
 			if (indiceColision == -1){
 				continue;
-			}
-			else{
+			} else {
 				arrKames[k] = null;
-				xGuardado = arrAuto[indiceColision].getX();
-				yGuardado = arrAuto[indiceColision].getY();
-				
+								
 				arrAuto[indiceColision] = null;
-				timerSpawn = System.currentTimeMillis();
 				puntaje += 5;
 				contadorKame -= 1;
-				System.out.println(xGuardado + yGuardado);
-				
 				}
-			if (System.currentTimeMillis() - timerSpawn > 2000) {
-				arrAuto[indiceColision] = new Auto(xGuardado,yGuardado,100,60);
 			}
 		}
-	}
-		
+	
+//	void hayColisionCalle (Calle calle, Kamehameha[] arrKames) {
+//		
+//		for (int k = 0; k < arrKames.length; k++) {
+//			for (int c = 0; c < calle.getCantCarriles(); c++) {
+//				for (int a = 0; a < calle.getCarril(c).getCantAutos(); a++) {
+//					int indiceColision = colisionAutoCalle(calle,arrKames);
+//					if (indiceColision != -1) {
+//						System.out.println(indiceColision);
+//						arrKames[k] = null;
+//						calle.getCarril(c).removerAuto(indiceColision);
+//						puntaje += 5;
+//						contadorKame -= 1;
+//					}
+//				}
+//			}
+//		}
+//	}
+	
+	
 	//metodo para respawnear autos:
 	void carRespawn(Auto[] arrAuto) {
 		carTimer = new Timer();
@@ -90,22 +97,45 @@ public class Juego extends InterfaceJuego
 	
 	//metodo para identificar auto colisionado con el kame:	
 	int colisionAuto (Auto[] arrAuto, Kamehameha kame) {
-		if(kame == null) {
-			return -1;
-		}
-		for (int i = 0; i < arrAuto.length; i++) {
-			if (arrAuto[i] == null)
-				continue;
-			if (arrAuto[i].getX() - (arrAuto[i].getWidth()/2) < kame.getX() &&
-				kame.getX() < (arrAuto[i].getX() + (arrAuto[i].getWidth()/2)) &&
-				arrAuto[i].getY() + (arrAuto[i].getHeight()/2) > kame.getY() - (kame.getAlto()/2) &&
-				kame.getY() > (arrAuto[i].getY() - arrAuto[i].getHeight()/2)) {
-				return i;
+		if(kame != null) {
+			for (int i = 0; i < arrAuto.length; i++) {
+				if (arrAuto[i] != null) {
+					if (arrAuto[i].getX() - (arrAuto[i].getWidth()/2) < kame.getX() &&
+						kame.getX() < (arrAuto[i].getX() + (arrAuto[i].getWidth()/2)) &&
+						arrAuto[i].getY() + (arrAuto[i].getHeight()/2) > kame.getY() - (kame.getAlto()/2) &&
+						kame.getY() > (arrAuto[i].getY() - arrAuto[i].getHeight()/2)){
+					return i;
+					}
+				}
 			}
-		}	
+		}
 		return -1;
 	}
 	
+	void colisionAutoKame (Calle calle, Kamehameha[] kames) {
+		for (int k = 0; k < kames.length; k++) {
+			Kamehameha kame = kames[k];
+			if(kame != null) {
+				for (int i = 0; i < calle.getCantCarriles(); i++) {
+					for (int j = 0; j < calle.getCarril(i).getCantAutos(); j++) {
+						Auto autoActual = calle.getCarril(i).getAuto(j);
+						if (autoActual != null) {
+							if (autoActual.getX() - (autoActual.getWidth()/2) < kame.getX() &&
+								kame.getX() < (autoActual.getX() + (autoActual.getWidth()/2)) &&
+								autoActual.getY() + (autoActual.getHeight()/2) > kame.getY() - (kame.getAlto()/2) &&
+								kame.getY() > (autoActual.getY() - autoActual.getHeight()/2)){
+							
+								calle.getCarril(i).removerAuto(j);
+								kames[k] = null;
+								puntaje += 5;
+								contadorKame -= 1;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	// metodo de colision auto con conejo
 	boolean colisionConejo (Auto[] arrAuto, Conejo conejo) {
 		for (int i = 0; i < arrAuto.length; i++) {
@@ -154,8 +184,6 @@ public class Juego extends InterfaceJuego
 			}
 		}
 	}
-// metodo para settear todos los autos null para reiniciar el juego	
-
 	
 {
 		// Inicializa el objeto entorno
@@ -169,8 +197,6 @@ public class Juego extends InterfaceJuego
 		this.contadorKame = 0;
 		this.calle1 = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-250,this.entorno.getWidth(),220);
 		this.calle2 = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()-300,this.entorno.getWidth(),220);
-//		this.Calles1[0] = new Calle(this.entorno.getWidth()/2,this.entorno.getHeight()/2-150,this.entorno.getWidth(),250);
-//		this.Calles1[1] = new Calle(this.entorno.getWidth()/2,-135,this.entorno.getWidth(),250);
 		this.rayo = null;
 		this.timerRayo = 0;
 		this.zanahoria = null;
@@ -179,7 +205,7 @@ public class Juego extends InterfaceJuego
 		
 		
 		
-	// Inicia el juego!
+		// Inicia el juego!
 		this.entorno.iniciar();	
 		this.entorno.setIconImage(icono);
 	}
@@ -217,6 +243,16 @@ public void tick()	// Procesamiento de un instante de tiempo
 			this.calle2.renderCalle(this.entorno);
 			this.calle2.fall();
 			
+			if (this.calle1.getY() > this.entorno.getHeight()-60) {
+				this.calle1.setY(-10);
+			}
+			
+			if (this.calle2.getY() > this.entorno.getHeight()-60) {
+				this.calle2.setY(-10);
+			}
+			
+			colisionAutoKame(this.calle1, this.kames);
+			colisionAutoKame(this.calle2, this.kames);
 			//Creacion, movimiento e interacciones del conejo:
 			
 			conejo.renderRabbit(this.entorno);
