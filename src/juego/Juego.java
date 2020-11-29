@@ -38,41 +38,6 @@ public class Juego extends InterfaceJuego
 	private boolean isGameOver = false; // indica si se debe mostrar la pantalla final o no
 	private boolean isRayoAvailable = true;
 	
-	void hayColision (Auto[] arrAuto, Kamehameha[] arrKames) {
-				
-		for (int k = 0; k < arrKames.length; k++) {
-			int indiceColision = colisionAuto(arrAuto,arrKames[k]);
-			if (indiceColision == -1){
-				continue;
-			} else {
-				arrKames[k] = null;
-								
-				arrAuto[indiceColision] = null;
-				puntaje += 5;
-				contadorKame -= 1;
-				}
-			}
-		}
-	
-//	void hayColisionCalle (Calle calle, Kamehameha[] arrKames) {
-//		
-//		for (int k = 0; k < arrKames.length; k++) {
-//			for (int c = 0; c < calle.getCantCarriles(); c++) {
-//				for (int a = 0; a < calle.getCarril(c).getCantAutos(); a++) {
-//					int indiceColision = colisionAutoCalle(calle,arrKames);
-//					if (indiceColision != -1) {
-//						System.out.println(indiceColision);
-//						arrKames[k] = null;
-//						calle.getCarril(c).removerAuto(indiceColision);
-//						puntaje += 5;
-//						contadorKame -= 1;
-//					}
-//				}
-//			}
-//		}
-//	}
-	
-	
 	//metodo para respawnear autos:
 	void carRespawn(Auto[] arrAuto) {
 		carTimer = new Timer();
@@ -95,22 +60,7 @@ public class Juego extends InterfaceJuego
 		carTimer.schedule(respawn, 5000);
 	}
 	
-	//metodo para identificar auto colisionado con el kame:	
-	int colisionAuto (Auto[] arrAuto, Kamehameha kame) {
-		if(kame != null) {
-			for (int i = 0; i < arrAuto.length; i++) {
-				if (arrAuto[i] != null) {
-					if (arrAuto[i].getX() - (arrAuto[i].getWidth()/2) < kame.getX() &&
-						kame.getX() < (arrAuto[i].getX() + (arrAuto[i].getWidth()/2)) &&
-						arrAuto[i].getY() + (arrAuto[i].getHeight()/2) > kame.getY() - (kame.getAlto()/2) &&
-						kame.getY() > (arrAuto[i].getY() - arrAuto[i].getHeight()/2)){
-					return i;
-					}
-				}
-			}
-		}
-		return -1;
-	}
+	//metodo para identificar auto colisionado con el kame y eliminar ambos objetos, ademas de sumar puntaje. 	
 	
 	void colisionAutoKame (Calle calle, Kamehameha[] kames) {
 		for (int k = 0; k < kames.length; k++) {
