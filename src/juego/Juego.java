@@ -234,6 +234,7 @@ public class Juego extends InterfaceJuego {
 				if (this.rayo.getY() < 0 || colisionAutoRayo(this.calle1, this.rayo)
 						|| colisionAutoRayo(this.calle2, this.rayo)) {
 					this.rayo = null;
+				Herramientas.play("archivos/RaySound.wav");	
 				}
 			}
 
