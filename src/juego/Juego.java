@@ -87,26 +87,6 @@ public class Juego extends InterfaceJuego {
 		return false;
 	}
 
-//	void colisionAutoRayo(Calle calle, Rayo rayo) {
-//		if (rayo != null) {
-//			for (int c = 0; c < calle.getCantCarriles(); c++) {
-//				for (int a = 0; a < calle.getCarril(c).getCantAutos(); a++) {
-//					Auto autoActual = calle.getCarril(c).getAuto(a);
-//					if (autoActual != null) {
-//						if (autoActual.getX() - (autoActual.getWidth() / 2) < rayo.getX()
-//								&& rayo.getX() < (autoActual.getX() + (autoActual.getWidth() / 2))
-//								&& autoActual.getY() + (autoActual.getHeight() / 2) > rayo.getY() - (rayo.getAlto() / 2)
-//								&& rayo.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
-//								this.zanahoria = new Zanahoria(autoActual.getX(), autoActual.getX(), 50, 20);	
-//								calle.getCarril(c).removerAuto(a);
-//								rayo = null;
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-
 	boolean colisionAutoRayo(Calle calle, Rayo rayo) {
 		if (rayo != null) {
 			for (int c = 0; c < calle.getCantCarriles(); c++) {
@@ -204,7 +184,7 @@ public class Juego extends InterfaceJuego {
 				conejo.moveRight();
 			if (entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX() > 0 + this.conejo.getWidth())
 				conejo.moveLeft();
-
+// creacion movimiento e interacciones del kame
 			if (entorno.sePresiono(entorno.TECLA_ESPACIO) && contadorKame < 3) {
 				for (int i = 0; i < this.kames.length; i++) {
 					if (this.kames[i] == null) {
