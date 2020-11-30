@@ -1,14 +1,18 @@
 package juego;
 
-import java.awt.Color;
+import java.awt.Image;
+
 import entorno.Entorno;
+import entorno.Herramientas;
+
 
 public class Conejo {
+	
 	private double x;
 	private double y;
 	private int width;
 	private int height;
-		
+	private static Image imgConejo= Herramientas.cargarImagen("archivos/rogerchico.png");
 	
 	public Conejo(int x, int y, int ancho, int alto) {
 		this.x = x;
@@ -18,23 +22,22 @@ public class Conejo {
 	}
 	
 	void fall() {
-		this.y = y+0.4;
+		this.y = y+0.2;
 	}
 	
-	void moveFordward() {
-		this.y = y - 50;
+	void moveForward() {
+		this.y = y - 25;
 	}
 	void moveLeft() {
-		this.x = x - this.width;
+		this.x = x - this.width+2;
 	}
 	
 	void moveRight() {
-		this.x = x + this.width;
+		this.x = x + this.width-2;
 	}
 	
 	void renderRabbit(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.WHITE);
-		
+		entorno.dibujarImagen(imgConejo, this.x, this.y, 0);
 	}
 	
 	double getX() {
@@ -59,6 +62,18 @@ public class Conejo {
 	void setY(double y) {
 		this.y = y;
 	}
-
-	
+	public Kamehameha disparar () {	
+		Kamehameha kame = new Kamehameha(this.x, this.y, 40, 70);
+		return kame ;		
+	}
+	public Rayo rayo() {
+		Rayo rayo = new Rayo (this.x, this.y, 20 ,70);
+		return rayo;
+	}
+	public boolean comer (Zanahoria zanahoria) {
+		return (this.getY() + this.getHeight()/2 > zanahoria.getY() - zanahoria.getAlto() &&
+				this.getY() - this.getHeight()/2 < zanahoria.getY() + zanahoria.getAlto() &&
+				this.getX() + this.getWidth() /2 > zanahoria.getX() - zanahoria.getAncho() &&
+				this.getX() - this.getWidth() /2 < zanahoria.getX() + zanahoria.getAncho());
+	}
 }

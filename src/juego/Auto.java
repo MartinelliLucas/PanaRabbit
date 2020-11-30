@@ -1,27 +1,28 @@
 package juego;
 
-import java.awt.Color;
 import entorno.Entorno;
+import entorno.Herramientas;
 
+import java.awt.Image;
 public class Auto {
 
 	private double x;
 	private double y;
-	private int width;
-	private int height;
+	public static int width = 50;
+	public static int height = 22;
 	private double speed;
+
+	private static Image imgautoizq= Herramientas.cargarImagen("archivos/autito5.png");
+	private static Image imgautoder= Herramientas.cargarImagen("archivos/autoder.png");
+
+
 	
-	public Auto(double x, double y, int width, int height) {
+	public Auto(double x, double y, double speed) {
 		this.x = x;
 		this.y = y;
-		this.width = width;
-		this.height = height;
-		this.speed = 2;
+		this.speed = speed;
 	}
 	
-	void setSpeed(double Speed) {
-		this.speed = Speed;
-	}
 	void moveForward() {
 		this.x = x + this.speed;
 	}
@@ -31,11 +32,14 @@ public class Auto {
 	}
 	
 	void fall() {
-		this.y = y+0.1;
+		this.y = y+0.2;
 	}
 	
 	void renderCar(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.BLUE);
+		entorno.dibujarImagen(imgautoizq, this.x, this.y, 0);
+	}
+	void renderCarDer (Entorno entorno) {
+		entorno.dibujarImagen(imgautoder, this.x, this.y, 0);
 	}
 	
 	double getX() {
@@ -46,11 +50,11 @@ public class Auto {
 		return this.y;
 	}
 	double getWidth() {
-		return this.width;
+		return width;
 	}
 	
 	double getHeight() {
-		return this.height;
+		return height;
 	}
 	
 	void setX(double value){
