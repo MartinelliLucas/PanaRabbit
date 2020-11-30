@@ -17,7 +17,7 @@ public class Juego extends InterfaceJuego {
 	private Kamehameha[] kames;
 	private Rayo rayo;
 	private Zanahoria zanahoria;
-	private int contadorKame; // entero qe controla los lanzamientos del kame
+	private int contadorKame; // entero que controla los lanzamientos del kame
 	private int contadorRayo;
 	private int salto;
 	private int puntaje;
@@ -28,6 +28,7 @@ public class Juego extends InterfaceJuego {
 	private boolean isStartScreenActive = true; // indica si se debe mostrar la pantalla inicial o no
 	private boolean isGameOver = false; // indica si se debe mostrar la pantalla final o no
 	private boolean isRayoAvailable = false;
+	private boolean victory= false;
 
 	// metodo para respawnear autos:
 	void respawnCars(Calle calle) {
@@ -148,7 +149,7 @@ public class Juego extends InterfaceJuego {
 			this.isStartScreenActive = false;
 		}
 
-		if (!this.isStartScreenActive && !this.isGameOver) {
+		if (!this.isStartScreenActive && !this.isGameOver && !this.victory) {
 
 			Image grass = Herramientas.cargarImagen("archivos/grass.jpg");
 			entorno.dibujarImagen(grass, 400, 300, 0);
@@ -231,6 +232,7 @@ public class Juego extends InterfaceJuego {
 				if (this.rayo.getY() < 0 || colisionAutoRayo(this.calle1, this.rayo)
 						|| colisionAutoRayo(this.calle2, this.rayo)) {
 					this.rayo = null;
+				Herramientas.play("archivos/RaySound.wav");	
 				}
 			}
 
@@ -266,6 +268,44 @@ public class Juego extends InterfaceJuego {
 		entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
 		entorno.cambiarFont("console", 18, Color.white);
 		entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
+		
+		//codigo para terminar el juego si se gano,se gana llegando a 100 puntos
+		if(this.puntaje>=100) {
+			this.victory=true;
+			Image imagenWin= Herramientas.cargarImagen("archivos/victory2.jpg");
+			entorno.dibujarImagen(imagenWin, 400, 300, 0);
+			entorno.cambiarFont("arial", 18, Color.WHITE);
+			entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N", entorno.getWidth() - 560,
+					entorno.getHeight() - 100);
+			entorno.escribirTexto("Su puntaje es: "+ this.puntaje, entorno.getWidth()-500,entorno.getHeight()-120);
+			
+			if (entorno.sePresiono('y')) {// si apreta y cierro ventana y vuelvo a iniciar
+				this.calle1 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() / 2 - 250,
+						this.entorno.getWidth(), 220);
+				this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300,
+						this.entorno.getWidth(), 220);
+				this.zanahoria = null;
+				for (int i = 0; i < kames.length; i++) {
+					kames[i]= null;
+				}
+				this.isRayoAvailable = false;
+				this.conejo.setX(entorno.getWidth() / 2);
+				this.conejo.setY(entorno.getHeight() - 100);
+				this.contadorKame = 0;
+				this.contadorRayo = 0;
+				this.puntaje = 0;
+				this.salto =0;
+				this.isGameOver = false;
+				this.isStartScreenActive = true;
+				this.victory=false;
+			}
+			if (entorno.sePresiono('n')) {
+				// termino el juego
+				System.exit(0);
+			}
+		}
+		
+		
 		// codigo para terminar el juego si el conejo sale por el limite inferior o
 		// choca:
 		if (this.conejo.getY() + conejo.getHeight() / 2 > entorno.getHeight()
@@ -274,7 +314,8 @@ public class Juego extends InterfaceJuego {
 			this.conejo.setY(2000);
 			Image imagenFin = Herramientas.cargarImagen("archivos/fin.jpg");
 			entorno.dibujarImagen(imagenFin, 400, 300, 0);
-			entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N", entorno.getWidth() - 500,
+			//entorno.cambiarFont("arial", 18, Color.white);
+			entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N", entorno.getWidth() - 560,
 					entorno.getHeight() - 100);
 
 			if (entorno.sePresiono('y')) {// si apreta y cierro ventana y vuelvo a iniciar
