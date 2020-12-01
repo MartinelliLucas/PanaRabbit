@@ -25,32 +25,36 @@ public class Carril {
 		this.dirDerecha = direccion;
 		this.speed = speed;
 		for (int i = 0; i < cantAutos; i++) {
-			this.arrAuto[i] = new Auto(i * 180, this.y,this.speed);
+			this.arrAuto[i] = new Auto(i * 180, this.y,this.speed,direccion);
 		}
 		
 	}
 
 	void fall() {
+		//hace caer el carril.
 		this.y += 0.2;
+		//llama el metodo fall de cada auto.
 		for (int i = 0; i < arrAuto.length; i++) {
 			if (arrAuto[i] != null) {
 				arrAuto[i].fall();
 			}
 		}
 	}
-	public Auto [] arrAuto() {
-		return this.arrAuto;
-	}
+
 	void renderCarril(Entorno entorno) {
+		// Dibuja un rectangulo gris que representa el carril que compone una calle. 
 		entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.darkGray);
+		//setea el carril en y = 0 cuando sale por el limite inferior de pantalla
 		if (this.y > entorno.getHeight() - 50) {
 			this.y = 0;
 		}
+		//delega la responsabilidad de dibujarse a cada auto y llama a los 
+		//metodos correspondientes para su movimiento y aparicion en pantalla.
 		for (int i = 0; i < arrAuto.length; i++) {
 			if (arrAuto[i] != null) {
 				if (this.dirDerecha) {
 					arrAuto[i].renderCarDer(entorno);
-					arrAuto[i].moveForward();
+					arrAuto[i].moveRight();
 					if (arrAuto[i].getX() > entorno.getWidth()) {
 						arrAuto[i].setX(0);
 					}
@@ -58,8 +62,8 @@ public class Carril {
 						arrAuto[i].setY(0);
 					}
 				} else {
-					arrAuto[i].renderCar(entorno);
-					arrAuto[i].moveBackwards();
+					arrAuto[i].renderCarIzq(entorno);
+					arrAuto[i].moveLeft();
 					if (arrAuto[i].getX() < 0) {
 						arrAuto[i].setX(entorno.getWidth());
 					}
@@ -85,14 +89,13 @@ public class Carril {
 
 	// setea en null un auto dentro del array, en la posicion indicada por el
 	// parametro.
-	public void removerAuto(int indice) {
-		this.arrAuto[indice] = null;
+	public void removerAuto(int index) {
+		this.arrAuto[index] = null;
 	}
 
 	// crea un nuevo auto dentro del array, en la posicion indicada por el
 	// parametro.
-
-	public void agregarAuto(int indice, Entorno entorno) {
+	public void agregarAuto(int index, Entorno entorno) {
 		boolean sePuedeCrear = true;
 		if (this.dirDerecha) {
 			for (int a = 0; a < arrAuto.length; a++) {
@@ -101,7 +104,7 @@ public class Carril {
 				}
 			}
 			if (sePuedeCrear) {
-				this.arrAuto[indice] = new Auto(0 - Auto.width / 2, this.y,this.speed);
+				this.arrAuto[index] = new Auto(0 - Auto.width / 2, this.y,this.speed,this.dirDerecha);
 			}
 		} else {
 			for (int a = 0; a < arrAuto.length; a++) {
@@ -110,7 +113,7 @@ public class Carril {
 				}
 			}
 			if (sePuedeCrear) {
-				this.arrAuto[indice] = new Auto(entorno.getWidth() + Auto.width / 2, this.y,this.speed);
+				this.arrAuto[index] = new Auto(entorno.getWidth() + Auto.width / 2, this.y,this.speed,this.dirDerecha);
 			}
 		}
 	}

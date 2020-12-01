@@ -7,8 +7,8 @@ import entorno.Herramientas;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego {
+	
 	// El objeto Entorno que controla el tiempo y otros
-
 	private Entorno entorno;
 	private Conejo conejo;
 	private Calle calle1;
@@ -17,17 +17,19 @@ public class Juego extends InterfaceJuego {
 	private Kamehameha[] kames;
 	private Rayo rayo;
 	private Zanahoria zanahoria;
-	private int contadorKame; // entero qe controla los lanzamientos del kame
-	private int contadorRayo;
+	private int contadorKame; // entero que controla los lanzamientos del kame
+	private int contadorRayo; // entero que controla los saltos para usar el rayo.
 	private int salto;
 	private int puntaje;
-
+	private Obstaculo hidrante;
+	
 	// Variables y métodos propios de cada grupo
 
 	// banderas necesarias para evitar que el tick renderize objetos no deseados
 	private boolean isStartScreenActive = true; // indica si se debe mostrar la pantalla inicial o no
 	private boolean isGameOver = false; // indica si se debe mostrar la pantalla final o no
-	private boolean isRayoAvailable = false;
+	private boolean isRayoAvailable = false; //indica si el rayo esta disponible para su uso o no.
+	private boolean victory= false; // indica si se debe mostrar la pantalla en caso de que el jugador gane.
 
 	// metodo para respawnear autos:
 	void respawnCars(Calle calle) {
@@ -52,11 +54,10 @@ public class Juego extends InterfaceJuego {
 						Auto autoActual = calle.getCarril(c).getAuto(a);
 						if (autoActual != null) {
 							if (autoActual.getX() - (autoActual.getWidth() / 2) < kame.getX()
-									&& kame.getX() < (autoActual.getX() + (autoActual.getWidth() / 2))
-									&& autoActual.getY() + (autoActual.getHeight() / 2) > kame.getY()
-											- (kame.getAlto() / 2)
-									&& kame.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
-
+								&& kame.getX() < (autoActual.getX() + (autoActual.getWidth() / 2))
+								&& autoActual.getY() + (autoActual.getHeight() / 2) > kame.getY()
+								- (kame.getAlto() / 2)
+								&& kame.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
 								calle.getCarril(c).removerAuto(a);
 								kames[k] = null;
 								puntaje += 5;
@@ -87,25 +88,17 @@ public class Juego extends InterfaceJuego {
 		return false;
 	}
 
-//	void colisionAutoRayo(Calle calle, Rayo rayo) {
-//		if (rayo != null) {
-//			for (int c = 0; c < calle.getCantCarriles(); c++) {
-//				for (int a = 0; a < calle.getCarril(c).getCantAutos(); a++) {
-//					Auto autoActual = calle.getCarril(c).getAuto(a);
-//					if (autoActual != null) {
-//						if (autoActual.getX() - (autoActual.getWidth() / 2) < rayo.getX()
-//								&& rayo.getX() < (autoActual.getX() + (autoActual.getWidth() / 2))
-//								&& autoActual.getY() + (autoActual.getHeight() / 2) > rayo.getY() - (rayo.getAlto() / 2)
-//								&& rayo.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
-//								this.zanahoria = new Zanahoria(autoActual.getX(), autoActual.getX(), 50, 20);	
-//								calle.getCarril(c).removerAuto(a);
-//								rayo = null;
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
+	// Metodo para verificar si el conejo puede moverse o no en la direccion
+	// apretada, con relacion al obstaculo.
+	boolean sePuedeMover(Obstaculo obstaculo, Conejo conejo, double x, double y) {
+		if(Math.abs(obstaculo.getX() - x) < conejo.getWidth()/2 && 
+		   Math.abs(obstaculo.getY() - y) < conejo.getHeight()*3/4) {
+			return false;
+		}
+		return true;
+	}
+
+	// metodo de colision del auto con el rayo zanahorificador:
 
 	boolean colisionAutoRayo(Calle calle, Rayo rayo) {
 		if (rayo != null) {
@@ -139,15 +132,14 @@ public class Juego extends InterfaceJuego {
 		this.conejo = new Conejo(entorno.getWidth() / 2, entorno.getHeight() - 100, 32, 45);
 		this.kames = new Kamehameha[3];
 		this.contadorKame = 0;
-		this.calle1 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() / 2 - 250,
-				this.entorno.getWidth(), 220);
-		this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300, this.entorno.getWidth(),
-				220);
+		this.calle1 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() / 2 - 250);
+		this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300);
 		this.rayo = null;
 		this.zanahoria = null;
 		this.salto = 0;
 		this.puntaje = 0;
-		this.contadorRayo =0 ;
+		this.contadorRayo = 0;
+		this.hidrante = new Obstaculo(600, 225, 28, 42);
 
 		// Inicia el juego!
 		this.entorno.iniciar();
@@ -168,10 +160,12 @@ public class Juego extends InterfaceJuego {
 			this.isStartScreenActive = false;
 		}
 
-		if (!this.isStartScreenActive && !this.isGameOver) {
+		if (!this.isStartScreenActive && !this.isGameOver && !this.victory) {
 
 			Image grass = Herramientas.cargarImagen("archivos/grass.jpg");
 			entorno.dibujarImagen(grass, 400, 300, 0);
+
+			// Creacion movimiento e interacciones de las calles:
 
 			this.calle1.renderCalle(this.entorno);
 			this.calle1.fall();
@@ -189,21 +183,33 @@ public class Juego extends InterfaceJuego {
 			}
 			respawnCars(this.calle2);
 
+			this.hidrante.renderObstaculo(this.entorno);
+			this.hidrante.fall();
 			// Creacion, movimiento e interacciones del conejo:
 
 			conejo.renderRabbit(this.entorno);
 			conejo.fall();
 
 			if (entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight()) {
-				conejo.moveForward();
-				salto++;
-				contadorRayo ++ ;
+				
+				if (sePuedeMover(this.hidrante, this.conejo, this.conejo.getX(), this.conejo.getY()-25)) {
+					conejo.moveForward();
+					salto++;
+					contadorRayo++;
+				}
 			}
-			if (entorno.sePresiono(entorno.TECLA_DERECHA)
-					&& conejo.getX() < entorno.getWidth() - this.conejo.getWidth() - 5)
-				conejo.moveRight();
-			if (entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX() > 0 + this.conejo.getWidth())
-				conejo.moveLeft();
+			if (entorno.sePresiono(entorno.TECLA_DERECHA) && conejo.getX() < entorno.getWidth() - this.conejo.getWidth()) {
+				if (sePuedeMover(this.hidrante, this.conejo, this.conejo.getX()+this.conejo.getWidth() - 2, this.conejo.getY())) {
+					conejo.moveRight();
+				}
+			}
+			
+			if (entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX() > 0 + this.conejo.getWidth()) {
+				if (sePuedeMover(this.hidrante, this.conejo, this.conejo.getX() - this.conejo.getWidth() + 2 , this.conejo.getY())) {
+					conejo.moveLeft();
+				}
+			}
+
 
 			if (entorno.sePresiono(entorno.TECLA_ESPACIO) && contadorKame < 3) {
 				for (int i = 0; i < this.kames.length; i++) {
@@ -231,7 +237,6 @@ public class Juego extends InterfaceJuego {
 
 			// creacion e interacciones del rayo
 
-
 			if (this.contadorRayo == 10) {
 				this.isRayoAvailable = true;
 			}
@@ -251,11 +256,12 @@ public class Juego extends InterfaceJuego {
 				if (this.rayo.getY() < 0 || colisionAutoRayo(this.calle1, this.rayo)
 						|| colisionAutoRayo(this.calle2, this.rayo)) {
 					this.rayo = null;
+				Herramientas.play("archivos/RaySound.wav");	
 				}
 			}
 
 			// creacion e interacciones de la zanahoria
-			if(this.zanahoria != null) {
+			if (this.zanahoria != null) {
 				this.zanahoria.renderZanahoria(this.entorno);
 				this.zanahoria.fall();
 				if (this.zanahoria.getY() > entorno.getHeight() - 50) {
@@ -266,7 +272,7 @@ public class Juego extends InterfaceJuego {
 					this.zanahoria = null;
 				}
 			}
-			if(this.zanahoria != null) {
+			if (this.zanahoria != null) {
 				this.zanahoria.renderZanahoria(this.entorno);
 				this.zanahoria.fall();
 				if (this.zanahoria.getY() > entorno.getHeight() - 50) {
@@ -286,6 +292,42 @@ public class Juego extends InterfaceJuego {
 		entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
 		entorno.cambiarFont("console", 18, Color.white);
 		entorno.escribirTexto("Rayo Zanahorificador", 560, 40);
+		
+		//codigo para terminar el juego si se gano,se gana llegando a 100 puntos
+		if(this.puntaje>=100) {
+			this.victory=true;
+			Image imagenWin= Herramientas.cargarImagen("archivos/victory2.jpg");
+			entorno.dibujarImagen(imagenWin, 400, 300, 0);
+			entorno.cambiarFont("arial", 18, Color.WHITE);
+			entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N", entorno.getWidth() - 560,
+					entorno.getHeight() - 100);
+			entorno.escribirTexto("Su puntaje es: "+ this.puntaje, entorno.getWidth()-500,entorno.getHeight()-120);
+			
+			if (entorno.sePresiono('y')) {// si apreta y cierro ventana y vuelvo a iniciar
+				this.calle1 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() / 2 - 250);
+				this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300);
+				this.zanahoria = null;
+				for (int i = 0; i < kames.length; i++) {
+					kames[i]= null;
+				}
+				this.hidrante = new Obstaculo(600, 225, 28, 42);
+				this.isRayoAvailable = false;
+				this.conejo.setX(entorno.getWidth() / 2);
+				this.conejo.setY(entorno.getHeight() - 100);
+				this.contadorKame = 0;
+				this.contadorRayo = 0;
+				this.puntaje = 0;
+				this.salto =0;
+				this.isGameOver = false;
+				this.isStartScreenActive = true;
+				this.victory=false;
+			}
+			if (entorno.sePresiono('n')) {
+				// termino el juego
+				System.exit(0);
+			}
+		}
+		
 		// codigo para terminar el juego si el conejo sale por el limite inferior o
 		// choca:
 		if (this.conejo.getY() + conejo.getHeight() / 2 > entorno.getHeight()
@@ -294,25 +336,26 @@ public class Juego extends InterfaceJuego {
 			this.conejo.setY(2000);
 			Image imagenFin = Herramientas.cargarImagen("archivos/fin.jpg");
 			entorno.dibujarImagen(imagenFin, 400, 300, 0);
-			entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N", entorno.getWidth() - 500,
+			//entorno.cambiarFont("arial", 18, Color.white);
+			entorno.escribirTexto("¿Desea continuar? \n Pulse Y o N", entorno.getWidth() - 560,
 					entorno.getHeight() - 100);
 
 			if (entorno.sePresiono('y')) {// si apreta y cierro ventana y vuelvo a iniciar
-				this.calle1 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() / 2 - 250,
-						this.entorno.getWidth(), 220);
-				this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300,
-						this.entorno.getWidth(), 220);
+				this.calle1 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() / 2 - 250);
+				this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300);
 				this.zanahoria = null;
 				for (int i = 0; i < kames.length; i++) {
-					kames[i]= null;
+					kames[i] = null;
 				}
 				this.isRayoAvailable = false;
 				this.conejo.setX(entorno.getWidth() / 2);
 				this.conejo.setY(entorno.getHeight() - 100);
+				this.hidrante.setX(600);
+				this.hidrante.setY(225);
 				this.contadorKame = 0;
 				this.contadorRayo = 0;
 				this.puntaje = 0;
-				this.salto =0;
+				this.salto = 0;
 				this.isGameOver = false;
 				this.isStartScreenActive = true;
 			}
@@ -339,6 +382,6 @@ public class Juego extends InterfaceJuego {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		Juego juego = new Juego();
-		Herramientas.loop("archivos/musica.wav");	
+		Herramientas.loop("archivos/musica.wav");
 	}
 }

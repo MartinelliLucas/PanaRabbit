@@ -76,4 +76,5 @@ public class Conejo {
 				this.getX() + this.getWidth() /2 > zanahoria.getX() - zanahoria.getAncho() &&
 				this.getX() - this.getWidth() /2 < zanahoria.getX() + zanahoria.getAncho());
 	}
+		
 }

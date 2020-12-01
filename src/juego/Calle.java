@@ -6,15 +6,11 @@ public class Calle {
 	
 	private double x;
 	private double y;
-	private int width;
-	private int height;
 	private Carril[] carriles;
 	
-	public Calle(double x, double y, int width, int height) {
+	public Calle(double x, double y) {
 		this.x = x;
 		this.y = y;
-		this.width = width;
-		this.height = height;
 		this.carriles = new Carril[4];
 		this.carriles[0] = new Carril(y+100, 3, true, 2);
 		this.carriles[1] = new Carril(y+45, 4, false, 1.5);
@@ -24,7 +20,6 @@ public class Calle {
 	}
 	
 	public void fall() {
-		this.y = y+0.2;
 		for (int i = 0; i < carriles.length; i++) {
 			carriles[i].fall();
 		}
@@ -35,9 +30,7 @@ public class Calle {
 			carriles[i].renderCarril(entorno);
 		}
 	}
-	public Carril [] getCarril(){
-		return this.carriles;
-	}
+	
 	public double getX() {
 		return x;
 	}
@@ -54,14 +47,6 @@ public class Calle {
 		this.y = y;
 	}
 
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-	
 	public Carril getCarril(int index){
 		return this.carriles[index];
 	}
