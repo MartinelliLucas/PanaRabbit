@@ -1,6 +1,5 @@
 package juego;
 
-import java.awt.Color;
 import java.awt.Image;
 import entorno.Entorno;
 import entorno.Herramientas;
@@ -24,10 +23,6 @@ public class Obstaculo {
 	}
 	
 	public void renderObstaculo(Entorno entorno) {
-		entorno.dibujarRectangulo(this.x, this.y, this.width, this.height, 0, Color.RED);
-	}
-
-	public void render(Entorno entorno) {
 		entorno.dibujarImagen(hidrante, this.x, this.y, 0);
 	}
 	
@@ -37,6 +32,14 @@ public class Obstaculo {
 
 	public double getY() {
 		return y;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public void setY(double y) {
+		this.y = y;
 	}
 
 	public int getWidth() {

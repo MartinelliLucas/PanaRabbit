@@ -20,7 +20,6 @@ public class Calle {
 	}
 	
 	public void fall() {
-		this.y = y+0.2;
 		for (int i = 0; i < carriles.length; i++) {
 			carriles[i].fall();
 		}
@@ -31,9 +30,7 @@ public class Calle {
 			carriles[i].renderCarril(entorno);
 		}
 	}
-	public Carril [] getCarril(){
-		return this.carriles;
-	}
+	
 	public double getX() {
 		return x;
 	}

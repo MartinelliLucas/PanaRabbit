@@ -23,11 +23,12 @@ public class Auto {
 		coloresAutosIzq[1] = Herramientas.cargarImagen("archivos/autoRojoIzq.png");
 		coloresAutosIzq[2] = Herramientas.cargarImagen("archivos/autoVioletaIzq.png");
 	}
+	//boolean direccion = true para la derecha, false para la izquierda.
 	public Auto(double x, double y, double speed, boolean direccion) {
 		this.x = x;
 		this.y = y;
 		this.speed = speed;
-		int indiceImagen = (int)(Math.random()*3); 
+		int indiceImagen = (int)(Math.random()*3);
 		if (direccion) {
 			this.imagenAuto = coloresAutosDer[indiceImagen];
 		} else {
@@ -35,11 +36,11 @@ public class Auto {
 		}
 	}
 	
-	void moveForward() {
+	void moveRight() {
 		this.x = x + this.speed;
 	}
 	
-	void moveBackwards() {
+	void moveLeft() {
 		this.x = x - this.speed;
 	}
 	
@@ -47,7 +48,7 @@ public class Auto {
 		this.y = y+0.2;
 	}
 	
-	void renderCar(Entorno entorno) {
+	void renderCarIzq(Entorno entorno) {
 		entorno.dibujarImagen(this.imagenAuto, this.x, this.y, 0);
 	}
 	void renderCarDer (Entorno entorno) {

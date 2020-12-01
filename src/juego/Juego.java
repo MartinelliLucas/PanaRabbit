@@ -7,8 +7,8 @@ import entorno.Herramientas;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego {
+	
 	// El objeto Entorno que controla el tiempo y otros
-
 	private Entorno entorno;
 	private Conejo conejo;
 	private Calle calle1;
@@ -18,17 +18,18 @@ public class Juego extends InterfaceJuego {
 	private Rayo rayo;
 	private Zanahoria zanahoria;
 	private int contadorKame; // entero que controla los lanzamientos del kame
-	private int contadorRayo;
+	private int contadorRayo; // entero que controla los saltos para usar el rayo.
 	private int salto;
 	private int puntaje;
 	private Obstaculo hidrante;
+	
 	// Variables y métodos propios de cada grupo
 
 	// banderas necesarias para evitar que el tick renderize objetos no deseados
 	private boolean isStartScreenActive = true; // indica si se debe mostrar la pantalla inicial o no
 	private boolean isGameOver = false; // indica si se debe mostrar la pantalla final o no
-	private boolean isRayoAvailable = false;
-	private boolean victory= false;
+	private boolean isRayoAvailable = false; //indica si el rayo esta disponible para su uso o no.
+	private boolean victory= false; // indica si se debe mostrar la pantalla en caso de que el jugador gane.
 
 	// metodo para respawnear autos:
 	void respawnCars(Calle calle) {
@@ -53,10 +54,10 @@ public class Juego extends InterfaceJuego {
 						Auto autoActual = calle.getCarril(c).getAuto(a);
 						if (autoActual != null) {
 							if (autoActual.getX() - (autoActual.getWidth() / 2) < kame.getX()
-									&& kame.getX() < (autoActual.getX() + (autoActual.getWidth() / 2))
-									&& autoActual.getY() + (autoActual.getHeight() / 2) > kame.getY()
-											- (kame.getAlto() / 2)
-									&& kame.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
+								&& kame.getX() < (autoActual.getX() + (autoActual.getWidth() / 2))
+								&& autoActual.getY() + (autoActual.getHeight() / 2) > kame.getY()
+								- (kame.getAlto() / 2)
+								&& kame.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
 								calle.getCarril(c).removerAuto(a);
 								kames[k] = null;
 								puntaje += 5;
@@ -87,11 +88,11 @@ public class Juego extends InterfaceJuego {
 		return false;
 	}
 
-
 	// Metodo para verificar si el conejo puede moverse o no en la direccion
-	// apretada.
+	// apretada, con relacion al obstaculo.
 	boolean sePuedeMover(Obstaculo obstaculo, Conejo conejo, double x, double y) {
-		if(Math.abs(obstaculo.getX() - x) < conejo.getWidth()/2 && Math.abs(obstaculo.getY() - y) < conejo.getHeight()*3/4) {
+		if(Math.abs(obstaculo.getX() - x) < conejo.getWidth()/2 && 
+		   Math.abs(obstaculo.getY() - y) < conejo.getHeight()*3/4) {
 			return false;
 		}
 		return true;
@@ -182,7 +183,7 @@ public class Juego extends InterfaceJuego {
 			}
 			respawnCars(this.calle2);
 
-			this.hidrante.render(this.entorno);
+			this.hidrante.renderObstaculo(this.entorno);
 			this.hidrante.fall();
 			// Creacion, movimiento e interacciones del conejo:
 
@@ -190,7 +191,7 @@ public class Juego extends InterfaceJuego {
 			conejo.fall();
 
 			if (entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight()) {
-				System.out.println(this.conejo.getY());
+				
 				if (sePuedeMover(this.hidrante, this.conejo, this.conejo.getX(), this.conejo.getY()-25)) {
 					conejo.moveForward();
 					salto++;
@@ -327,7 +328,6 @@ public class Juego extends InterfaceJuego {
 			}
 		}
 		
-		
 		// codigo para terminar el juego si el conejo sale por el limite inferior o
 		// choca:
 		if (this.conejo.getY() + conejo.getHeight() / 2 > entorno.getHeight()
@@ -350,6 +350,8 @@ public class Juego extends InterfaceJuego {
 				this.isRayoAvailable = false;
 				this.conejo.setX(entorno.getWidth() / 2);
 				this.conejo.setY(entorno.getHeight() - 100);
+				this.hidrante.setX(600);
+				this.hidrante.setY(225);
 				this.contadorKame = 0;
 				this.contadorRayo = 0;
 				this.puntaje = 0;
