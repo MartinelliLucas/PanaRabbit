@@ -56,7 +56,6 @@ public class Juego extends InterfaceJuego {
 									&& autoActual.getY() + (autoActual.getHeight() / 2) > kame.getY()
 											- (kame.getAlto() / 2)
 									&& kame.getY() > (autoActual.getY() - autoActual.getHeight() / 2)) {
-
 								calle.getCarril(c).removerAuto(a);
 								kames[k] = null;
 								puntaje += 5;
@@ -86,21 +85,16 @@ public class Juego extends InterfaceJuego {
 		}
 		return false;
 	}
-	
-	boolean sePuedeMover(Obstaculo obstaculo, Conejo conejo) {
-		if (conejo.getX() + conejo.getWidth()/2 + 5 < obstaculo.getX() - obstaculo.getWidth()||
-			conejo.getX() - conejo.getWidth()/2 -5 > obstaculo.getX() + obstaculo.getWidth()) {
-			return true;
+
+	// Metodo para verificar si el conejo puede moverse o no en la direccion
+	// apretada.
+	boolean sePuedeMover(Obstaculo obstaculo, Conejo conejo, double x, double y) {
+		if(Math.abs(obstaculo.getX() - x) < conejo.getWidth()/2 && Math.abs(obstaculo.getY() - y) < conejo.getHeight()*3/4) {
+			return false;
 		}
-			
-		else if (conejo.getY() - conejo.getHeight()/2 - 25 > obstaculo.getY() + obstaculo.getHeight()/2 ||
-				conejo.getY() + conejo.getHeight()/2 < obstaculo.getY() - obstaculo.getHeight()/2) {
-			return true;
-		}
-		else {
-			return false;	
-		}
+		return true;
 	}
+
 	// metodo de colision del auto con el rayo zanahorificador:
 	boolean colisionAutoRayo(Calle calle, Rayo rayo) {
 		if (rayo != null) {
@@ -140,9 +134,9 @@ public class Juego extends InterfaceJuego {
 		this.zanahoria = null;
 		this.salto = 0;
 		this.puntaje = 0;
-		this.contadorRayo =0 ;
-		this.hidrante = new Obstaculo(400,425,28,42);
-		
+		this.contadorRayo = 0;
+		this.hidrante = new Obstaculo(600, 225, 28, 42);
+
 		// Inicia el juego!
 		this.entorno.iniciar();
 		this.entorno.setIconImage(icono);
@@ -166,9 +160,9 @@ public class Juego extends InterfaceJuego {
 
 			Image grass = Herramientas.cargarImagen("archivos/grass.jpg");
 			entorno.dibujarImagen(grass, 400, 300, 0);
-			
-			//Creacion movimiento e interacciones de las calles:
-						
+
+			// Creacion movimiento e interacciones de las calles:
+
 			this.calle1.renderCalle(this.entorno);
 			this.calle1.fall();
 			colisionAutoKame(this.calle1, this.kames);
@@ -184,7 +178,7 @@ public class Juego extends InterfaceJuego {
 				this.calle2.setY(-10);
 			}
 			respawnCars(this.calle2);
-			
+
 			this.hidrante.render(this.entorno);
 			this.hidrante.fall();
 			// Creacion, movimiento e interacciones del conejo:
@@ -193,26 +187,25 @@ public class Juego extends InterfaceJuego {
 			conejo.fall();
 
 			if (entorno.sePresiono(entorno.TECLA_ARRIBA) && conejo.getY() > conejo.getHeight()) {
-				if(sePuedeMover(this.hidrante,this.conejo)) {
-				conejo.moveForward();
-				salto++;
-				contadorRayo ++ ;
+				System.out.println(this.conejo.getY());
+				if (sePuedeMover(this.hidrante, this.conejo, this.conejo.getX(), this.conejo.getY()-25)) {
+					conejo.moveForward();
+					salto++;
+					contadorRayo++;
 				}
 			}
-			if (entorno.sePresiono(entorno.TECLA_DERECHA) && 
-				conejo.getX() < entorno.getWidth() - this.conejo.getWidth() - 5) {
-				if(sePuedeMover(this.hidrante,this.conejo)) {
+			if (entorno.sePresiono(entorno.TECLA_DERECHA)
+					&& conejo.getX() < entorno.getWidth() - this.conejo.getWidth()) {
+				if (sePuedeMover(this.hidrante, this.conejo, this.conejo.getX()+this.conejo.getWidth() - 2, this.conejo.getY())) {
 					conejo.moveRight();
 				}
-			}	
-			
-			if (entorno.sePresiono(entorno.TECLA_IZQUIERDA) && 
-				conejo.getX() > 0 + this.conejo.getWidth()) {
-				if(sePuedeMover(this.hidrante,this.conejo)) {
-						conejo.moveLeft();
-				}
 			}
 			
+			if (entorno.sePresiono(entorno.TECLA_IZQUIERDA) && conejo.getX() > 0 + this.conejo.getWidth()) {
+				if (sePuedeMover(this.hidrante, this.conejo, this.conejo.getX() - this.conejo.getWidth() + 2 , this.conejo.getY())) {
+					conejo.moveLeft();
+				}
+			}
 
 			if (entorno.sePresiono(entorno.TECLA_ESPACIO) && contadorKame < 3) {
 				for (int i = 0; i < this.kames.length; i++) {
@@ -240,7 +233,6 @@ public class Juego extends InterfaceJuego {
 
 			// creacion e interacciones del rayo
 
-
 			if (this.contadorRayo == 10) {
 				this.isRayoAvailable = true;
 			}
@@ -264,7 +256,7 @@ public class Juego extends InterfaceJuego {
 			}
 
 			// creacion e interacciones de la zanahoria
-			if(this.zanahoria != null) {
+			if (this.zanahoria != null) {
 				this.zanahoria.renderZanahoria(this.entorno);
 				this.zanahoria.fall();
 				if (this.zanahoria.getY() > entorno.getHeight() - 50) {
@@ -275,7 +267,7 @@ public class Juego extends InterfaceJuego {
 					this.zanahoria = null;
 				}
 			}
-			if(this.zanahoria != null) {
+			if (this.zanahoria != null) {
 				this.zanahoria.renderZanahoria(this.entorno);
 				this.zanahoria.fall();
 				if (this.zanahoria.getY() > entorno.getHeight() - 50) {
@@ -311,7 +303,7 @@ public class Juego extends InterfaceJuego {
 				this.calle2 = new Calle(this.entorno.getWidth() / 2, this.entorno.getHeight() - 300);
 				this.zanahoria = null;
 				for (int i = 0; i < kames.length; i++) {
-					kames[i]= null;
+					kames[i] = null;
 				}
 				this.isRayoAvailable = false;
 				this.conejo.setX(entorno.getWidth() / 2);
@@ -319,7 +311,7 @@ public class Juego extends InterfaceJuego {
 				this.contadorKame = 0;
 				this.contadorRayo = 0;
 				this.puntaje = 0;
-				this.salto =0;
+				this.salto = 0;
 				this.isGameOver = false;
 				this.isStartScreenActive = true;
 			}
@@ -346,6 +338,6 @@ public class Juego extends InterfaceJuego {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		Juego juego = new Juego();
-		Herramientas.loop("archivos/musica.wav");	
+		Herramientas.loop("archivos/musica.wav");
 	}
 }

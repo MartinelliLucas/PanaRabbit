@@ -25,7 +25,7 @@ public class Carril {
 		this.dirDerecha = direccion;
 		this.speed = speed;
 		for (int i = 0; i < cantAutos; i++) {
-			this.arrAuto[i] = new Auto(i * 180, this.y,this.speed);
+			this.arrAuto[i] = new Auto(i * 180, this.y,this.speed,direccion);
 		}
 		
 	}
@@ -101,7 +101,7 @@ public class Carril {
 				}
 			}
 			if (sePuedeCrear) {
-				this.arrAuto[indice] = new Auto(0 - Auto.width / 2, this.y,this.speed);
+				this.arrAuto[indice] = new Auto(0 - Auto.width / 2, this.y,this.speed,this.dirDerecha);
 			}
 		} else {
 			for (int a = 0; a < arrAuto.length; a++) {
@@ -110,7 +110,7 @@ public class Carril {
 				}
 			}
 			if (sePuedeCrear) {
-				this.arrAuto[indice] = new Auto(entorno.getWidth() + Auto.width / 2, this.y,this.speed);
+				this.arrAuto[indice] = new Auto(entorno.getWidth() + Auto.width / 2, this.y,this.speed,this.dirDerecha);
 			}
 		}
 	}
